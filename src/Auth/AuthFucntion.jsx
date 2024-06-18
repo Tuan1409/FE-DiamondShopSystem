@@ -27,7 +27,7 @@ export function validateUser(userData) {
                 reject(error)
             })
     })
-    console.log(userData)
+   
 }
 
 export function LogoutAndRedirect() {
