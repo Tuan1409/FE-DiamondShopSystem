@@ -1,0 +1,99 @@
+table {
+    width: 50%;
+}
+
+.CRUDButton {
+    margin: 10px 0;
+    display: block;
+    width: 100%;
+    border: none;
+    padding: 14px;
+    text-align: center;
+}
+
+
+.CRUDContainer {
+    margin: 10px;
+    padding: 10px;
+}
+
+.titleOfFormContainer,
+.titleOfForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonContainer {
+    display: inline;
+}
+
+.headerAdminContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formSubmit {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.submitButton {
+    margin: 5px;
+    display: block;
+    width: 100%;
+    padding: 14px;
+}
+
+.MuiButtonBase {
+    margin: 5px;
+}
+
+table {
+    margin-bottom: 10px;
+}
+
+
+.logoutButton {
+    margin-top: 5px;
+    display: block;
+    width: 100%;
+    padding: 14px;
+
+}
+
+.logoutLink {
+    text-decoration: none;
+    color: #fff;
+}
+
+.form-control {
+    padding: 20px;
+    font-size: calc(0.8vw + 0.5vh);
+}
+
+.form-control::placeholder {
+    font-size: calc(0.8vw + 0.5vh);
+}
+
+.refreshButtonConainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.refreshButton {
+    margin-bottom: 10px;
+}
+
+.contentAdminContainer {
+    float: right;
+    min-width: 80vw;
+}
+
+p {
+    margin: 0;
+}
