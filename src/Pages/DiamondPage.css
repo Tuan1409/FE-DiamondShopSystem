@@ -1,0 +1,58 @@
+.diamond-shop-container {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .diamond-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  
+  .diamond-card { 
+    position: relative;
+    width: 280px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #fff;
+    margin-bottom: 20px;
+  }
+  
+  .diamond-image {
+    width: 100%;
+    height: auto;
+  }
+  
+  .diamond-info {
+    margin-top: 10px;
+  }
+  
+  .diamond-price {
+    font-weight: bold;
+  }
+  
+  .favorite-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: red;
+    cursor: pointer;
+  }
+  
+  .view-more-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
