@@ -50,32 +50,37 @@ export default function ReadAccount() {
 	}
 
 	useEffect(() => {
-		// Define the Read function inside useEffect or make sure it's defined outside and doesn't change
 		function Read() {
-			const url = 'https://localhost:7122/api/Account/GetAccountList';
-			fetch(url, {
-				method: 'GET',
-				headers: {
-					'Accept': '*/*'
-				},
+		  const url = 'https://localhost:7122/api/Account/GetAccountList';
+		  fetch(url, {
+			method: 'GET',
+			headers: {
+			  'Accept': '*/*'
+			},
+		  })
+			.then(response => response.json())
+			.then(responseData => {
+			  // Kiểm tra xem responseData.data có phải là một mảng hay không
+			  if (Array.isArray(responseData.data)) {
+				const rows = responseData.data.map(data => ({
+				  id: data.id,
+				  name: data.name,
+				  email: data.email,
+				  gender: data.gender,
+				  address: data.address,
+				  phoneNumber: data.phoneNumber,
+				  roleId: getRoleName(data.roleId)
+				}));
+				setData(rows);
+			  } else {
+				console.error("Error: Invalid API response - Data is not an array", responseData);
+				setData([]);
+			  }
 			})
-				.then(response => response.json())
-				.then(responseData => {
-					const rows = responseData.map(data => ({
-						id: data.id,
-						name: data.name,
-						email: data.email,
-						gender: data.gender ? 'Male' : 'Female',
-						address: data.address,
-						phoneNumber: data.phoneNumber,
-						roleId: getRoleName(data.roleId)
-					}))
-					setData(rows)
-				})
-				.catch((error) => console.error('Error:', error))
+			.catch((error) => console.error('Error:', error));
 		}
-		Read()
-	}, [triggerRead])
+		Read();
+	  }, [triggerRead]);
 
 	const handleDelete = (id) => {
 		setSelectedForDeletion(id)
@@ -83,7 +88,7 @@ export default function ReadAccount() {
 	}
 	function handleSubmitDelete(idAccount) {
 		if (idAccount) {
-			const url = 'https://localhost:7122/api/Account/DeleteUser/' + idAccount
+			const url = 'https://localhost:7122/api/Account/DeleteAccount/' + idAccount
 			fetch(url, {
 				method: 'DELETE',
 				headers: {
