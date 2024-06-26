@@ -3,6 +3,7 @@ import Home from "./Pages/Home";
 import Homepage from "./Pages/Homepage";
 import Ring from "./Pages/Ring";
 import DiamondPage from "./Pages/DiamondPage";
+import DiamondDetailPage from "./Pages/DiamondDetailPage";
 import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
 import Admin from "./Admin/Admin";
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="ring" element={<Ring />} />
         </Route>
 
+        <Route path="/diamond-detail/:id" element={<DiamondDetailPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin" element={<Admin />}>

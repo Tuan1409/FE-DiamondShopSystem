@@ -11,31 +11,59 @@ export default function Login() {
   const [error, setError] = useState("");
   let navigate = useNavigate();
 
-  const submitForm = (e) => {
-    e.preventDefault();
-    console.log("Email:", email);  // In giá trị của email
-    console.log("Password:", password); // In giá trị của password
-    validateUser({ email: email, password: password })
-      .then((response) => {
-        // Kiểm tra và chuyển hướng sau khi đăng nhập thành công
-        const token = localStorage.getItem("token");
-        if (token) {
-          const decodedToken = jwtDecode(token);
-          console.log("decodedToken", decodedToken); // Kiểm tra decodedToken
-          if (decodedToken.RoleID === "1") { // Kiểm tra RoleID
-            console.log("admin")
-            navigate("/admin"); // Chuyển hướng đến /admin
+  // const submitForm = (e) => {
+  //   e.preventDefault();
+  //   console.log("Email:", email);  // In giá trị của email
+  //   console.log("Password:", password); // In giá trị của password
+  //   validateUser({ email: email, password: password })
+  //     .then((response) => {
+  //       // Kiểm tra và chuyển hướng sau khi đăng nhập thành công
+  //       const token = localStorage.getItem("token");
+  //       if (token) {
+  //         const decodedToken = jwtDecode(token);
+  //         console.log("decodedToken", decodedToken); // Kiểm tra decodedToken
+  //         if (decodedToken.RoleID === "1") { // Kiểm tra RoleID
+  //           console.log("admin")
+  //           navigate("/admin"); // Chuyển hướng đến /admin
              
-          } else {
-            console.log("out")
-            navigate("/"); // Chuyển hướng về trang Home
-          }
-        }
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        setError(error.message);
+  //         } else {
+  //           console.log("out")
+  //           navigate("/"); // Chuyển hướng về trang Home
+  //         }
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Login error:", error);
+  //       setError(error.message);
+  //     });
+  // };
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("https://localhost:7122/api/Authentication/Login", {
+        email: email,
+        password: password,
       });
+
+      if (response.data.token) {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        const decodedToken = jwtDecode(token);
+        console.log("decodedToken", decodedToken); // Kiểm tra decodedToken
+
+        if (decodedToken.RoleID === "1") { // Kiểm tra RoleID
+          console.log("admin");
+          navigate("/admin"); // Chuyển hướng đến /admin
+        } else {
+          console.log("user");
+          navigate("/"); // Chuyển hướng về trang Home
+        }
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError(error.response ? error.response.data.message : "Login failed");
+    }
   };
 
   return (

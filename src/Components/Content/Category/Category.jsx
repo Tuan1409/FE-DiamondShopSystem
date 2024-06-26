@@ -9,6 +9,11 @@ export default function Category() {
     window.addEventListener("load", () => {
         window.swiffyslider.init();
     });
+
+    const handleClick = (CategoryData) => {
+		navigate(`/diamond-detail/${CategoryData.id}`, { state: { CategoryData } });
+	  };
+
     return (
         <div className='container-fluid categoryContainer'>
             <div>
@@ -19,7 +24,7 @@ export default function Category() {
                     {CategoryData.map((CategoryData) => (
                         <li key={CategoryData.id}>
                             <a href='' className='linkCategoryContainer'>
-                                <div className='card border-0'>
+                                <div className='card border-0' onClick={() => handleClick(CategoryData)}>
                                     <div className='ratio ratio-1x1'>
                                         <img src={CategoryData.img} alt='' className='imgListProduct' />
                                     </div>
