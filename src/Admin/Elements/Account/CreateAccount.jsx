@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Modal, Box, TextField, Select, InputLabel, MenuItem, OutlinedInput, FormControl } from '@mui/material'
+import { Button, Modal, Box, TextField, Select, InputLabel, MenuItem, OutlinedInput, FormControl,Snackbar } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend'
 export default function CreateAccount(props) {
@@ -24,8 +24,10 @@ export default function CreateAccount(props) {
 		setRoleAccount(null)
 		setDataAccount(null)
 	}
+	const [openSnackbar, setOpenSnackbar] = useState(false); // Thêm state cho Snackbar
 	const handleSubmit = (event) => {
 		event.preventDefault()
+	
 		// Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
 		CreateAccount(emailAccount, passwordAccount, nameAccount, addressAccount, genderAccount, passwordAccount, roleAccount)
 		setnameAccount('')
@@ -37,7 +39,15 @@ export default function CreateAccount(props) {
 		setRoleAccount(null)
 		setDataAccount(null)
 	}
-
+	
+	const formData = new FormData();
+    formData.append('name', nameAccount);
+    formData.append('email', emailAccount);
+    formData.append('address', addressAccount);
+    formData.append('gender', genderAccount);
+    formData.append('password', passwordAccount);
+    formData.append('phoneNumber', phoneAccount);
+    formData.append('roleId', roleAccount);
 	const handleClear = () => {
 		setnameAccount('')
 		setEmailAccount('')
@@ -48,7 +58,13 @@ export default function CreateAccount(props) {
 		setRoleAccount(null)
 		setDataAccount(null)
 	}
-
+	const handleCloseSnackbar = (event, reason) => {
+		if (reason === 'clickaway') {
+		  return;
+		}
+		setOpenSnackbar(false);
+	  };
+	
 	function CreateAccount(Email, Password, Name, Address, Gender, Phone, Role) {
 		const url = 'https://localhost:7122/api/Account/CreateUser'
 		const data = {
@@ -60,19 +76,24 @@ export default function CreateAccount(props) {
 			phoneNumber: Phone,
 			roleId: Role
 		}
+		console.log(data);
 		fetch(url, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json-patch+json',
-				'Accept': '*/*',
-
-			},
-			body: JSON.stringify(data)
-		}).then(response => response.json())
-			.then(responseData => {
-				setDataAccount(responseData)
-				props.onAccountCreated()
+			body: formData, // Gửi FormData trực tiếp
+		  })
+			.then((response) => {
+			  console.log('Response:', response);
+			  setOpenSnackbar(true);
+			  handleClose();
+			  return response.json();
 			})
+			.then((responseData) => {
+			  setDataAccount(responseData);
+			  props.onAccountCreated();
+			})
+			.catch((error) => {
+			  console.error('Lỗi fetch:', error);
+			});
 	}
 
 	return (
@@ -200,6 +221,7 @@ export default function CreateAccount(props) {
 					</Box>
 				</Modal>
 			</div>
+			
 		</>
 	);
 }
