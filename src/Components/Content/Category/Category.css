@@ -1,7 +1,7 @@
 .card {
     border-radius: 0 0 10px 10px;
     width: 231px;
-    height: 341.89px;
+    /* height: 341.89px; */
     background-color: #D9D9D9;
 }
 
@@ -69,4 +69,5 @@ a {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    line-height: 1.2;
 }
