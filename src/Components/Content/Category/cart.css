@@ -1,0 +1,32 @@
+/* cart.css */
+
+.container.mt-5 {
+    max-width: 800px; /* Điều chỉnh độ rộng tối đa của container nếu cần */
+  }
+  
+  .table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6; /* Điều chỉnh màu sắc đường viền nếu cần */
+  }
+  
+  .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6; /* Điều chỉnh màu sắc đường viền nếu cần */
+  }
+  
+  .table tbody + tbody {
+    border-top: 2px solid #dee2e6; /* Điều chỉnh màu sắc đường viền nếu cần */
+  }
+  
+  .text-right {
+    text-align: right;
+  }
