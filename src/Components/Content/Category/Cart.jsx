@@ -1,5 +1,8 @@
+// Components/Content/Category/Cart.jsx
 import React, { useState, useEffect } from 'react';
-import './Cart.css'; // Import CSS riêng cho trang giỏ hàng (nếu có)
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './Cart.css';
 
 export default function Cart() {
   const [cart, setCart] = useState(null);
@@ -8,7 +11,6 @@ export default function Cart() {
   useEffect(() => {
     const fetchCartData = async () => {
       if (!token) {
-        // Xử lý khi chưa đăng nhập, ví dụ: chuyển hướng đến trang đăng nhập
         console.error("Chưa đăng nhập!");
         return;
       }
@@ -17,32 +19,81 @@ export default function Cart() {
         const res = await fetch('https://localhost:7122/api/Cart/view-cart', {
           headers: {
             'Authorization': `Bearer ${token}`
-          },
+          }
         });
 
         if (!res.ok) {
-          throw new Error(`Lỗi khi lấy dữ liệu giỏ hàng. Status: ${res.status}`);
+          throw new Error(`Lỗi khi lấy dữ liệu giỏ hàng: ${res.status}`);
         }
 
         const data = await res.json();
-        setCart(data.data); // Lưu dữ liệu giỏ hàng vào state
+        setCart(data.data);
       } catch (error) {
         console.error('Lỗi:', error);
-        // Xử lý lỗi, ví dụ: hiển thị thông báo lỗi cho người dùng
+        toast.error('Có lỗi xảy ra khi lấy dữ liệu giỏ hàng!', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     };
 
     fetchCartData();
-  }, [token]); // Chạy lại effect khi token thay đổi
+  }, [token]);
 
-  // Tính tổng tiền
   const calculateTotalPrice = () => {
-    if (!cart || !cart.items) return 0;
-    return cart.items.reduce((total, item) => total + item.quantity * item.price, 0);
+    return cart ? cart.items.reduce((total, item) => total + item.quantity * item.price, 0) : 0;
+  };
+
+  const handleDeleteItem = async (productId) => {
+    if (!token) {
+      console.error("Chưa đăng nhập!");
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://localhost:7122/api/Cart/delete-cart/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Lỗi khi xóa sản phẩm: ${res.status}`);
+      }
+
+      setCart(prevCart => ({
+        ...prevCart,
+        items: prevCart.items.filter(item => item.productId !== productId)
+      }));
+
+      toast.success('Xóa sản phẩm thành công!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      console.error('Lỗi:', error);
+      toast.error('Có lỗi xảy ra khi xóa sản phẩm!', {
+        // ... (toast options)
+      });
+    }
   };
 
   return (
     <div className="container mt-5">
+      <ToastContainer />
       <h2>Giỏ hàng của bạn</h2>
       {cart ? (
         <div>
@@ -54,6 +105,7 @@ export default function Cart() {
                 <th>Số lượng</th>
                 <th>Đơn giá</th>
                 <th>Thành tiền</th>
+                <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
@@ -64,14 +116,25 @@ export default function Cart() {
                   <td>{item.quantity}</td>
                   <td>{item.price.toLocaleString()} VND</td>
                   <td>{(item.quantity * item.price).toLocaleString()} VND</td>
+                  <td>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDeleteItem(item.productId)}
+                    >
+                      Xóa
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="text-right">
             <h3>Tổng tiền: {calculateTotalPrice().toLocaleString()} VND</h3>
+            {/* Nút Thanh toán */}
+            <button className="btn btn-primary">
+              Thanh toán
+            </button>
           </div>
-          {/* Thêm các nút hoặc chức năng khác cho giỏ hàng (ví dụ: Xóa sản phẩm, Cập nhật số lượng, Thanh toán) */}
         </div>
       ) : (
         <p>Giỏ hàng trống</p>

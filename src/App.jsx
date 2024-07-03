@@ -3,7 +3,7 @@ import Home from "./Pages/Home";
 import Homepage from "./Pages/Homepage";
 import Ring from "./Pages/Ring";
 import DiamondPage from "./Pages/DiamondPage";
-import Cart from "./Components/Content/Category/Cart"; q
+import Cart from "./Components/Content/Category/Cart"; 
 import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
 import Admin from "./Admin/Admin";
