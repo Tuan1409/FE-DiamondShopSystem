@@ -19,7 +19,7 @@ export default function Navbar() {
                     <CustomLink to="/">Jewelry</CustomLink>
                     <CustomLink to="/">Gifts</CustomLink>
                     <CustomLink to="/">Gemstones</CustomLink>
-                    <CustomLink to="/"><img src="src\assets\img\shopping-cart (1).png" alt="" className='cartLogo' /></CustomLink>
+                    <CustomLink to="/cart"><img src="src\assets\img\shopping-cart (1).png" alt="" className='cartLogo' /></CustomLink>
                     <CustomLink to="/login">Login</CustomLink>
                 </div>
             </nav >

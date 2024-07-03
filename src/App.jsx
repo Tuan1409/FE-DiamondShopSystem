@@ -3,6 +3,7 @@ import Home from "./Pages/Home";
 import Homepage from "./Pages/Homepage";
 import Ring from "./Pages/Ring";
 import DiamondPage from "./Pages/DiamondPage";
+import Cart from "./Components/Content/Category/Cart"; q
 import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
 import Admin from "./Admin/Admin";
@@ -13,11 +14,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />}>
+        <Route path="/" element={<Home />}> {/* Bắt đầu component Home */}
           <Route index element={<Homepage />} />
           <Route path="diamondPage" element={<DiamondPage />} />
           <Route path="ring" element={<Ring />} />
-        </Route>
+          <Route path="cart" element={<Cart />} /> {/* Đặt route /cart ở đây */}
+        </Route> {/* Kết thúc component Home */} 
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
