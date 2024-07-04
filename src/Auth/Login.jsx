@@ -22,7 +22,7 @@ export default function Login() {
         if (token) {
           const decodedToken = jwtDecode(token);
           console.log("decodedToken", decodedToken); // Kiểm tra decodedToken
-          if (decodedToken.RoleID === "1") { // Kiểm tra RoleID
+          if (decodedToken.RoleID === "Admin") { // Kiểm tra RoleID
             console.log("admin")
             navigate("/admin"); // Chuyển hướng đến /admin
              
