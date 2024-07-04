@@ -74,39 +74,43 @@ export default function UpdateAccount({ onClick, ...props }) {
 		setData(null)
 	}
 
-	function updateAccount(Id, Email, Name, Gender, Phone, Address, Password, RoleId, Point) {
-		const url = 'https://localhost:7122/api/Account/UpdateAccount/' + Id
-		const data = {
-			"id": parseInt(Id),
-			"name": Name,
-			"email": Email,
-			"gender": Gender,
-			"phoneNumber": Phone,
-			"address": Address,
-			"password": Password,
-			"roleId": parseInt(RoleId), // Chuyển đổi RoleId thành số nguyên
-			"point": parseInt(Point) // Chuyển đổi Point thành số nguyên
-		}
-        console.log(data);
-		fetch(url, {
+	async function updateAccount(Id, Email, Name, Gender, Phone, Address, Password, RoleId, Point) {
+		const url = `https://localhost:7122/api/Account/UpdateAccount/${Id}`;
+	
+		const formData = new FormData();
+		
+		formData.append('Name', Name); // Chú ý tên trường
+		formData.append('Email', Email);
+		formData.append('Password', Password);
+		formData.append('Address', Address);
+		formData.append('PhoneNumber', Phone);
+		formData.append('Gender', Gender); // Gửi "Male" hoặc "Female"
+		formData.append('RoleId', RoleId);
+		formData.append('Point', Point);
+	
+		try {
+		  const response = await fetch(url, {
 			method: 'PUT',
-			headers: {
-				'Accept': '*/*',
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(data)
-		})
-			.then(responseData => {
-				setData(responseData)
-				props.onAccountUpdated()
-                handleClose();
-                setOpenSnackbar(true); // Hiển thị Snackbar khi update thành công
-			})
-			.catch(error => {
-				console.error('Error updating account:', error);
-			});
-	}
-    
+			body: formData,
+		  });
+	
+		  if (!response.ok) {
+			const errorData = await response.json(); // Lấy thông tin lỗi từ server
+			throw new Error(`HTTP error! status: ${response.status}`);
+		  }
+	console.log(formData);
+		  // Xử lý kết quả (nếu cần)
+		  // Ví dụ: const data = await response.json();
+	
+		  props.onAccountUpdated(); 
+		  handleClose();
+		  setOpenSnackbar(true);
+		} catch (error) {
+		  console.error('Error updating account:', error);
+		  // Xử lý lỗi, ví dụ: hiển thị thông báo lỗi
+		}
+	  }
+	
     const handleCloseSnackbar = (event, reason) => {
 		if (reason === 'clickaway') {
 			return;
@@ -232,8 +236,8 @@ export default function UpdateAccount({ onClick, ...props }) {
 										sx={{
 											padding: '0'
 										}}>
-										<MenuItem value={true}>Male</MenuItem>
-										<MenuItem value={false}>Female</MenuItem>
+										  <MenuItem value="Male">Male</MenuItem> 
+										  <MenuItem value="Female">Female</MenuItem> 
 									</Select>
 								</FormControl>
 							</div>

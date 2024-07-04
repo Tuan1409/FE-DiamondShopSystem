@@ -17,17 +17,14 @@ export default function NavbarAdmin() {
             <nav className='adminNavContainer '>
                 <ul className='container-fluid' id='navbarAdminContainer'>
                     <CustomLink to="/">Home</CustomLink>
-                    <CustomLink to="/admin">Admin</CustomLink>
+                    
 
-                    <li onMouseEnter={hoverTheList} onMouseLeave={unhoverTheList}>
-                        <a>Element</a> <CaretDownOutlined />
-                        {hidden &&
-                            <div id='childrenOfList'>
+                  
                                 <CustomLink to="category">Category</CustomLink>
                                 <CustomLink to="account">Account</CustomLink>
-                            </div>
-                        }
-                    </li>
+                                <CustomLink to="product">Product</CustomLink>
+                                <CustomLink to="account">Promotion</CustomLink>
+                    
                     <CustomLink to='/'>
                         <button onClick={LogoutByButton} className='btn btn-danger btn-block'>Log out</button>
                     </CustomLink>

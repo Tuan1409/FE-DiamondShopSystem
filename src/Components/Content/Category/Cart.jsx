@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 
 export default function Cart() {
   const [cart, setCart] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartData = async () => {
@@ -57,11 +59,27 @@ export default function Cart() {
     }
 
     try {
-      const res = await fetch(`https://localhost:7122/api/Cart/delete-cart/${productId}`, {
-        method: 'DELETE',
+      const productToDelete = cart.items.find(item => item.productId === productId);
+      if (!productToDelete) {
+        throw new Error('Không tìm thấy sản phẩm trong giỏ hàng!');
+      }
+
+      const requestBody = {
+        items: [
+          {
+            productId: productId,
+            quantity: productToDelete.quantity 
+          }
+        ]
+      };
+
+      const res = await fetch(`https://localhost:7122/api/Cart/remove-from-cart`, {
+        method: 'PATCH',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(requestBody) 
       });
 
       if (!res.ok) {
@@ -86,6 +104,49 @@ export default function Cart() {
     } catch (error) {
       console.error('Lỗi:', error);
       toast.error('Có lỗi xảy ra khi xóa sản phẩm!', {
+        // ... (toast options)
+      });
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    if (!token) {
+      console.error("Chưa đăng nhập!");
+      return;
+    }
+
+    try {
+      const res = await fetch('https://localhost:7122/api/Order/place-order', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json(); // Lấy dữ liệu lỗi từ server (nếu có)
+        const errorMessage = errorData.message || `Lỗi khi đặt hàng: ${res.status}`;
+        throw new Error(errorMessage); 
+      }
+
+      // Xử lý khi đặt hàng thành công
+      toast.success('Đặt hàng thành công!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+      // Chuyển hướng người dùng đến trang cảm ơn hoặc trang lịch sử đơn hàng
+      navigate('/'); // Thay '/order-history' bằng đường dẫn thực tế
+
+    } catch (error) {
+      console.error('Lỗi:', error);
+      toast.error(`Có lỗi xảy ra khi đặt hàng: ${error.message}`, { 
         // ... (toast options)
       });
     }
@@ -131,7 +192,7 @@ export default function Cart() {
           <div className="text-right">
             <h3>Tổng tiền: {calculateTotalPrice().toLocaleString()} VND</h3>
             {/* Nút Thanh toán */}
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={handlePlaceOrder}>
               Thanh toán
             </button>
           </div>
