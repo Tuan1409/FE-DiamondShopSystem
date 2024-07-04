@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+
 import { Button, Modal, Box, TextField, Select, InputLabel, MenuItem, OutlinedInput, FormControl,Snackbar } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend'
@@ -25,6 +26,7 @@ export default function CreateAccount(props) {
 		setDataAccount(null)
 	}
 	const [openSnackbar, setOpenSnackbar] = useState(false); // Thêm state cho Snackbar
+	const [snackbarMessage, setSnackbarMessage] = useState(''); // Thêm dòng này
 	const handleSubmit = (event) => {
 		event.preventDefault()
 	
@@ -83,19 +85,35 @@ export default function CreateAccount(props) {
 		  })
 			.then((response) => {
 			  console.log('Response:', response);
-			  setOpenSnackbar(true);
-			  handleClose();
-			  return response.json();
+			  if (response.ok) {
+				setSnackbarMessage('Tạo tài khoản thành công!');
+				setOpenSnackbar(true);
+	  
+				setTimeout(() => {
+				  handleClose();
+				}, 1000); 
+	  
+				return response.json(); 
+			  } else {
+				return response.json().then((errorData) => {
+				  // Hiển thị thông báo lỗi từ server
+				  setSnackbarMessage(errorData.ErrorMessage || 'Lỗi khi tạo tài khoản!');
+				  setOpenSnackbar(true);
+				  throw new Error(errorData.ErrorMessage || 'Lỗi khi tạo tài khoản!');
+				});
+			  }
 			})
 			.then((responseData) => {
-			  setDataAccount(responseData);
+			  // Xử lý dữ liệu trả về từ API (nếu cần)
+			  console.log(responseData);
 			  props.onAccountCreated();
 			})
 			.catch((error) => {
 			  console.error('Lỗi fetch:', error);
+			  // Xử lý lỗi fetch (nếu cần)
 			});
-	}
-
+		}
+	  
 	return (
 		<>
 			<div style={{
@@ -143,19 +161,24 @@ export default function CreateAccount(props) {
 								</div> <br />
 								<div className='row'>
 									<div className='col-4'>
-										<FormControl fullWidth>
-											<InputLabel id="select-label">Gender</InputLabel>
-											<Select labelId="select-label"
-												id="demo-simple-select" variant="outlined"
-												label="Gender" value={genderAccount}
-												onChange={e => setGenderAccount(e.target.value === "true")} className='form-control'
-												sx={{
-													padding: '0'
-												}}>
-												<MenuItem value={true}>Male</MenuItem>
-												<MenuItem value={false}>Female</MenuItem>
-											</Select>
-										</FormControl>
+									<FormControl fullWidth>
+          <InputLabel id="select-label">Gender</InputLabel>
+          <Select
+            labelId="select-label"
+            id="demo-simple-select"
+            variant="outlined"
+            label="Gender"
+            value={genderAccount} 
+            onChange={(e) => setGenderAccount(e.target.value)} // Cập nhật trực tiếp với "Male" hoặc "Female"
+            className='form-control'
+            sx={{
+              padding: '0'
+            }}
+          >
+            <MenuItem value="Male">Male</MenuItem> 
+            <MenuItem value="Female">Female</MenuItem> 
+          </Select>
+        </FormControl>
 									</div>
 									<div className='col-4'>
 										<TextField type="text" value={phoneAccount} onChange={e => setPhoneAccount(e.target.value)}
@@ -220,6 +243,13 @@ export default function CreateAccount(props) {
 						</div>
 					</Box>
 				</Modal>
+				<Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000} 
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+      />
+				
 			</div>
 			
 		</>

@@ -24,7 +24,7 @@ export default function Login() {
           console.log("decodedToken", decodedToken); // Kiểm tra decodedToken
           if (decodedToken.RoleID === "Admin") { // Kiểm tra RoleID
             console.log("admin")
-            navigate("/admin"); // Chuyển hướng đến /admin
+            navigate("/admin/account"); // Chuyển hướng đến /admin
              
           } else {
             console.log("out")
