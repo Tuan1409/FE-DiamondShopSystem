@@ -1,9 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home";
 import Homepage from "./Pages/Homepage";
-import Ring from "./Pages/Ring";
-import DiamondPage from "./Pages/DiamondPage";
-import DiamondDetailPage from "./Pages/DiamondDetailPage";
+import DiamondPage from "./Pages/DiamondPages";
 import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
 import Admin from "./Admin/Admin";
@@ -17,7 +15,7 @@ export default function App() {
         <Route path="/" element={<Home />}>
           <Route index element={<Homepage />} />
           <Route path="diamondPage" element={<DiamondPage />} />
-          <Route path="ring" element={<Ring />} />
+          <Route path="product" element={<Ring />} />
         </Route>
 
         <Route path="/diamond-detail/:id" element={<DiamondDetailPage />} />
