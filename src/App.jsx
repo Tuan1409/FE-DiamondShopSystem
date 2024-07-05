@@ -9,6 +9,7 @@ import SignUp from "./Auth/SignUp";
 import Admin from "./Admin/Admin";
 import Category from "./Admin/Elements/Category/Category";
 import Account from "./Admin/Elements/Account/Account";
+import Product from "./Admin/Elements/Product/Product";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/admin" element={<Admin />}>
           <Route path="category" element={<Category />} />
           <Route path="account" element={<Account />} />
+          <Route path="product" element={<Product />} />
         </Route>
       </Routes>
     </BrowserRouter>
