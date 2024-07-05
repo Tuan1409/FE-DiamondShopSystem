@@ -9,6 +9,7 @@ import {
   TablePagination,
   CircularProgress,
 } from '@mui/material';
+import CreateProduct from './CreateProduct';
 
 export default function ReadProduct() {
   const [page, setPage] = useState(0);
@@ -47,26 +48,34 @@ export default function ReadProduct() {
     fetchProducts();
   }, []); 
 
+
+
   return (
     <div className='formCRUDContainer'>
       {isLoading ? ( 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <CircularProgress />
         </div>
+        
       ) : (
         <> 
+               <TableCell><CreateProduct onAccountCreated={() => setTriggerRead(prev => !prev)}></CreateProduct></TableCell>
           {/* Kiểm tra products là mảng và có dữ liệu */}
           {Array.isArray(products) && products.length > 0 ? ( 
             <>
+            
               <TableContainer>
                 <Table stickyHeader>
+         
                   <TableHead>
+                    
                     <TableRow>
                       <TableCell>Name</TableCell>
                       <TableCell>Price</TableCell>
                       <TableCell>Quantity</TableCell>
                       <TableCell>Images</TableCell>
                     </TableRow>
+                    
                   </TableHead>
                   <TableBody>
                     {products

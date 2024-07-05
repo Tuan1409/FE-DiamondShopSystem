@@ -1,122 +1,169 @@
-import React, { useState } from 'react';
-import {
-  Button,
-  Modal,
-  Box,
-  TextField,
-  Select,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Snackbar,
+
+import React, { useState, useEffect } from 'react';
+import { 
+    Button, Modal, Box, TextField, 
+    Select, InputLabel, MenuItem, 
+    OutlinedInput, FormControl, Snackbar,
+    Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
 
 export default function CreateProduct(props) {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [categoryId, setCategoryId] = useState(null);
-  const [productTypeId, setProductTypeId] = useState(null);
-  const [primaryDiamondId, setPrimaryDiamondId] = useState(null); 
-  const [subDiamondId, setSubDiamondId] = useState(null);   
-  const [images, setImages] = useState([]); 
-  const [open, setOpen] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [name, setName] = useState('');
+    const [categoryId, setCategoryId] = useState(''); 
+    const [productTypeId, setProductTypeId] = useState('');
+    const [weight, setWeight] = useState('');
+    const [wage, setWage] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [primaryDiamonds, setPrimaryDiamonds] = useState([]); 
+    const [subDiamonds, setSubDiamonds] = useState([]);
+    const [productImages, setProductImages] = useState([]);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    // Reset form fields
-    setName('');
-    setPrice('');
-    setQuantity('');
-    setCategoryId(null);
-    setProductTypeId(null);
-    setPrimaryDiamondId(null);
-    setSubDiamondId(null);
-    setImages([]);
-  };
+    const [open, setOpen] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => {
+        setOpen(false);
+        // Reset form fields
+        setName('');
+        setCategoryId('');
+        setProductTypeId('');
+        setWeight('');
+        setWage('');
+        setQuantity('');
+        setPrimaryDiamonds([]);
+        setSubDiamonds([]);
+        setProductImages([]);
+    };
+    const [categories, setCategories] = useState([]);
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('price', parseFloat(price)); 
-    formData.append('quantity', parseInt(quantity, 10)); 
-    formData.append('categoryId', categoryId);
-    formData.append('productTypeId', productTypeId);
-    formData.append('primaryDiamondId', primaryDiamondId); 
-    formData.append('subDiamondId', subDiamondId);  
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('https://localhost:7122/api/Category/GetCategories');
+                if (response.ok) {
+                    const data = await response.json();
+                    setCategories(data.data);
+                    console.log(categories, typeof categories);
+                } else {
+                    console.error("Lỗi khi lấy dữ liệu danh mục");
+                }
+            } catch (error) {
+                console.error("Lỗi:", error);
+            }
+        };
 
-    // Append each image file to FormData
-    for (let i = 0; i < images.length; i++) {
-      formData.append('images', images[i]); 
-    }
+        fetchCategories(); 
+    }, []);
+    const [diamonds, setDiamonds] = useState([]);
+    const [openDiamondModal, setOpenDiamondModal] = useState(false);
+  const [selectedDiamondType, setSelectedDiamondType] = useState(null); // Thêm dòng này
 
-    createProduct(formData);
-  };
+    useEffect(() => {
+      const fetchDiamonds = async () => {
+        try {
+          const response = await fetch('https://localhost:7122/api/Diamond/GetDiamondList');
+          if (response.ok) {
+            const data = await response.json();
+            setDiamonds(data.data);
+            console.log(diamonds, typeof diamonds);
+          } else {
+            console.error("Lỗi khi lấy dữ liệu diamond");
+          }
+        } catch (error) {
+          console.error("Lỗi:", error);
+        }
+      };
+  
+      fetchDiamonds();
+    }, []);
 
-  const handleClear = () => {
-    // Reset form fields (same as handleClose)
-    setName('');
-    setPrice('');
-    // ... reset other fields
-  };
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setOpenSnackbar(false);
+    };
+    
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
+        const formData = new FormData();
+        formData.append('Name', name); 
+        formData.append('CategoryId', categoryId);
+        formData.append('ProductTypeId', productTypeId);
+        formData.append('Weight', weight);
+        formData.append('Wage', wage); 
+        formData.append('Quantity', quantity);
 
-  async function createProduct(formData) {
-    const url = 'https://localhost:7122/api/Product/CreateProduct'; 
+        // Handle diamond arrays - adjust based on your API requirements
+        primaryDiamonds.forEach((diamondId, index) => {
+            formData.append(`PrimaryDiamonds[${index}].DiamondId`, diamondId); 
+        });
+        subDiamonds.forEach((diamondId, index) => {
+            formData.append(`SubDiamonds[${index}].DiamondId`, diamondId); 
+        });
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData, 
-      });
+        // Handle image uploads
+        productImages.forEach((image, index) => {
+            formData.append('ProductImages', image);
+        });
 
-      if (response.ok) {
-        setSnackbarMessage('Tạo sản phẩm thành công!');
-        setOpenSnackbar(true);
+        try {
+            const response = await fetch('https://localhost:7122/api/Product/CreateProduct', { 
+                method: 'POST',
+                body: formData 
+            });
 
-        setTimeout(() => {
-          handleClose(); 
-        }, 1000);
+            if (response.ok) {
+                setSnackbarMessage('Product created successfully!');
+                setOpenSnackbar(true);
+                setTimeout(handleClose, 1000); 
+            } else {
+                const errorData = await response.json();
+                console.error("API Error:", errorData);
+                throw new Error(errorData.ErrorMessage || 'Error creating product');
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            setSnackbarMessage(error.message);
+            setOpenSnackbar(true);
+        }
+    };
 
-        props.onProductCreated(); 
-      } else {
-        const errorData = await response.json(); 
-        setSnackbarMessage(errorData.ErrorMessage || 'Lỗi khi tạo sản phẩm!');
-        setOpenSnackbar(true);
-        throw new Error(errorData.ErrorMessage || 'Lỗi khi tạo sản phẩm!');
+    // Helper function to add diamond IDs to arrays
+    const handleAddDiamond = (diamond) => { // Nhận cả object diamond
+      if (selectedDiamondType === 'primary') {
+        setPrimaryDiamonds([...primaryDiamonds, { id: diamond.id, name: diamond.name }]);
+      } else if (selectedDiamondType === 'sub') {
+        setSubDiamonds([...subDiamonds, { id: diamond.id, name: diamond.name }]);
       }
-    } catch (error) {
-      console.error('Lỗi fetch:', error);
-    }
-  }
+      handleCloseDiamondModal();
+    };
+    const handleOpenDiamondModal = (type) => {
+      setSelectedDiamondType(type);
+      setOpenDiamondModal(true);
+    };
+  
+    const handleCloseDiamondModal = () => {
+      setOpenDiamondModal(false);
+    };
+    // Function to handle image selection
+    const handleImageChange = (event) => {
+        setProductImages([...event.target.files]);
+    };
 
-  return (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="contained" type="button" size="large" onClick={handleOpen}>
-          Create
-        </Button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box
-            sx={{
+    return (
+      <>
+      
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="contained" type="button" size="large" onClick={handleOpen}>
+            Create Product
+          </Button>
+    
+          <Modal open={open} onClose={handleClose}>
+            <Box sx={{
               position: 'absolute',
               top: '50%',
               left: '50%',
@@ -126,215 +173,169 @@ export default function CreateProduct(props) {
               border: '1px solid #000',
               boxShadow: 24,
               p: 4,
-            }}
-          >
-            <h3 className="titleOfForm">CREATE PRODUCT</h3>
-            <div>
+            }}>
+              <Typography variant="h6" component="h2" gutterBottom>
+                CREATE PRODUCT
+              </Typography>
+    
               <form onSubmit={handleSubmit}>
-                {/* Name */}
-                <div className="row">
-                  <div className="col-12">
-                    <TextField
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      id="outlined-basic"
-                      label="Name"
-                      variant="outlined"
-                      className="form-control"
-                      fullWidth 
-                    />
-                  </div>
-                </div>
-                <br />
-                {/* Price and Quantity */}
-                <div className="row">
-                  <div className="col-6">
-                    <TextField
-                      type="number" 
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      id="outlined-basic"
-                      label="Price"
-                      variant="outlined"
-                      className="form-control"
-                      fullWidth 
-                    />
-                  </div>
-                  <div className="col-6">
-                    <TextField
-                      type="number" 
-                      value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
-                      id="outlined-basic"
-                      label="Quantity"
-                      variant="outlined"
-                      className="form-control"
-                      fullWidth 
-                    />
-                  </div>
-                </div>
-                <br />
-                {/* Category */}
-                <div className="row">
-                  <div className="col-12">
-                    <FormControl fullWidth> 
-                      <InputLabel id="category-select-label">Category</InputLabel>
-                      <Select
-                        labelId="category-select-label"
-                        id="category-select"
-                        variant="outlined"
-                        label="Category"
-                        value={categoryId}
-                        onChange={(e) => setCategoryId(parseInt(e.target.value, 10))}
-                        className="form-control"
-                        sx={{ padding: '0' }} 
-                      >
-                        {/* Replace with your category options */}
-                        <MenuItem value={1}>Category 1</MenuItem>
-                        <MenuItem value={2}>Category 2</MenuItem>
-                        {/* ... more categories */}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-                <br />
-                {/* Product Type */}
-                <div className="row">
-                  <div className="col-12">
-                    <FormControl fullWidth>
-                      <InputLabel id="productType-select-label">Product Type</InputLabel>
-                      <Select
-                        labelId="productType-select-label"
-                        id="productType-select"
-                        variant="outlined"
-                        label="Product Type"
-                        value={productTypeId}
-                        onChange={(e) => setProductTypeId(parseInt(e.target.value, 10))} 
-                        className="form-control"
-                        sx={{ padding: '0' }} 
-                      >
-                        {/* Replace with your product type options */}
-                        <MenuItem value={1}>Product Type 1</MenuItem>
-                        <MenuItem value={2}>Product Type 2</MenuItem>
-                        {/* ... more product types */}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-                <br />
-                {/* Primary Diamond */}
-                <div className="row">
-                  <div className="col-12">
-                    <FormControl fullWidth>
-                      <InputLabel id="primaryDiamond-select-label">Primary Diamond</InputLabel>
-                      <Select
-                        labelId="primaryDiamond-select-label"
-                        id="primaryDiamond-select"
-                        variant="outlined"
-                        label="Primary Diamond"
-                        value={primaryDiamondId}
-                        onChange={(e) => setPrimaryDiamondId(parseInt(e.target.value, 10))}
-                        className="form-control"
-                        sx={{ padding: '0' }}
-                      >
-                        {/* Replace with your primary diamond options from API */}
-                        {/* Example: */}
-                        {/* {primaryDiamonds.map((diamond) => (
-                            <MenuItem key={diamond.id} value={diamond.id}>
-                              {diamond.name}
-                            </MenuItem>
-                          ))} */}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-                <br />
-                {/* Sub Diamond */}
-                <div className="row">
-                  <div className="col-12">
-                    <FormControl fullWidth>
-                      <InputLabel id="subDiamond-select-label">Sub Diamond</InputLabel>
-                      <Select
-                        labelId="subDiamond-select-label"
-                        id="subDiamond-select"
-                        variant="outlined"
-                        label="Sub Diamond"
-                        value={subDiamondId}
-                        onChange={(e) => setSubDiamondId(parseInt(e.target.value, 10))}
-                        className="form-control"
-                        sx={{ padding: '0' }}
-                      >
-                        {/* Replace with your sub diamond options from API */}
-                        {/* Example: */}
-                        {/* {subDiamonds.map((diamond) => (
-                            <MenuItem key={diamond.id} value={diamond.id}>
-                              {diamond.name}
-                            </MenuItem>
-                          ))} */}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-                <br />
+                <TextField
+                  label="Name"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+    
+    <FormControl fullWidth margin="normal">
+  <InputLabel id="category-select-label">Category</InputLabel>
+  <Select
+    labelId="category-select-label"
+    value={categoryId}
+    onChange={(e) => setCategoryId(e.target.value)}
+  >
+    {categories.map((category) => (
+      <MenuItem key={category.id} value={category.id}> {/* Sửa category.categoryId thành category.id */}
+        {category.name}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+    
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="productType-select-label">Product Type</InputLabel>
+                  <Select
+                    labelId="productType-select-label"
+                    value={productTypeId}
+                    onChange={(e) => setProductTypeId(e.target.value)}
+                  >
+                    {/* Replace with your actual product type options */}
+                    <MenuItem value="1">Product Type 1</MenuItem>
+                    <MenuItem value="2">Product Type 2</MenuItem>
+                  </Select>
+                </FormControl>
+    
+                <TextField
+                  label="Weight"
+                  variant="outlined"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                />
+    
+                <TextField
+                  label="Wage"
+                  variant="outlined"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  value={wage}
+                  onChange={(e) => setWage(e.target.value)}
+                />
+    
+                <TextField
+                  label="Quantity"
+                  variant="outlined"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+    
+                {/* Primary Diamonds */}
+                <div>
+    {primaryDiamonds.map((diamond, index) => (
+      <div key={index}>
+       <Typography>Diamond Name: {diamond.name}</Typography> {/* Hiển thị name */}
+      </div>
+    ))}
+    <Button
+      variant="outlined"
+      onClick={() => handleOpenDiamondModal('primary')}
+      sx={{ marginTop: '10px' }}
+    >
+      Add Primary Diamond
+    </Button>
+  </div>
 
-                {/* Images */}
-                <div className="row">
-                  <div className="col-12">
-                    <input
-                      accept="image/*" 
-                      id="contained-button-file"
-                      multiple 
-                      type="file"
-                      onChange={(e) => setImages(Array.from(e.target.files))}
-                      style={{ display: 'none' }}
-                    />
-                    <label htmlFor="contained-button-file">
-                      <Button variant="contained" component="span">
-                        Upload Images
-                      </Button>
-                    </label>
-                  </div>
-                </div>
-                <br />
 
-                <div className="formSubmit">
+            {/* Sub Diamonds */}
+            <div>
+            {subDiamonds.map((diamond, index) => (
+      <div key={index}>
+     <Typography>Diamond Name: {diamond.name}</Typography> {/* Hiển thị name */}
+      </div>
+    ))}
+    {/* ... */}
+    <Button
+      variant="outlined"
+      onClick={() => handleOpenDiamondModal('sub')}
+      sx={{ marginTop: '10px' }}
+    >
+      Add Sub Diamond
+    </Button>
+  </div>
+                {/* Image Upload */}
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleImageChange}
+                  sx={{ marginTop: '10px' }}
+                />
+    
+                <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
                   <Button
+                    variant="contained"
+                    color="primary"
                     type="submit"
-                    className="submitButton"
-                    value="Submit"
-                    variant="contained"
-                    size="large"
-                    endIcon={<SendIcon />}
-                    sx={{ margin: '5px' }}
+                    startIcon={<SendIcon />}
+                    sx={{ mr: 2 }}
                   >
-                    Send
+                    Submit
                   </Button>
+    
                   <Button
-                    type="button"
-                    value="Clear"
-                    onClick={handleClear}
-                    className="submitButton"
                     variant="contained"
-                    size="large"
                     color="error"
-                    endIcon={<CancelScheduleSendIcon />}
-                    sx={{ margin: '5px' }}
+                    onClick={handleClose}
+                    startIcon={<CancelScheduleSendIcon />}
                   >
-                    Clear
+                    Cancel
                   </Button>
                 </div>
               </form>
-            </div>
-          </Box>
-        </Modal>
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={3000} 
-          onClose={handleCloseSnackbar}
-          message={snackbarMessage}
-        />
-      </div>
-    </>
-  );
-}
+              <Modal open={openDiamondModal} onClose={handleCloseDiamondModal}>
+              <Box sx={{ /* ... */ }}>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  Select Diamond
+                </Typography>
+                {diamonds.map((diamond) => (
+                  <Button
+                    key={diamond.id}
+                    variant="outlined"
+                    fullWidth
+                    sx={{ marginBottom: 2 }}
+                    onClick={() => handleAddDiamond(diamond)}
+                  >
+                    {diamond.name} - {/* Hiển thị thông tin diamond */}
+                  </Button>
+                ))}
+              </Box>
+            </Modal>
+            </Box>
+          </Modal>
+    
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={3000}
+            onClose={handleCloseSnackbar}
+            message={snackbarMessage}
+          />
+        </div>
+      </>
+    );
+  }
