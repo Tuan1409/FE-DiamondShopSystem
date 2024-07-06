@@ -49,35 +49,52 @@ export default function ReadAccount() {
 		}
 	}
 
-	useEffect(() => {
-		function Read() {
-		  const url = 'https://localhost:7122/api/Account/GetAccountList';
-		  fetch(url, {
-			method: 'GET',
-			headers: {
-			  'Accept': '*/*'
-			},
-		  })
-			.then(response => response.json())
-			.then(responseData => {
-			  // Kiểm tra xem responseData.data có phải là một mảng hay không
-			  if (Array.isArray(responseData.data)) {
+	
+	  useEffect(() => {
+		async function Read() {
+		  try {
+			// Giả sử bạn có cách để lấy mã thông báo (ví dụ: từ bộ nhớ cục bộ)
+		
+			const token = localStorage.getItem("token");
+			if (!token) {
+			  console.error('Không tìm thấy mã thông báo xác thực.');
+			  return; // Hoặc chuyển hướng đến trang đăng nhập
+			}
+	
+			const url = 'https://localhost:7122/api/Account/GetAccountList';
+			const response = await fetch(url, {
+			  method: 'GET',
+			  headers: {
+				'Accept': '*/*',
+				'Authorization': `Bearer ${token}` // Thêm mã thông báo bearer vào tiêu đề
+			  },
+			});
+	
+			if (!response.ok) {
+			  throw new Error(`Lỗi HTTP! trạng thái: ${response.status}`); 
+			}
+	
+			const responseData = await response.json();
+	
+			if (Array.isArray(responseData.data)) {
 				const rows = responseData.data.map(data => ({
-				  id: data.id,
-				  name: data.name,
-				  email: data.email,
-				  gender: data.gender,
-				  address: data.address,
-				  phoneNumber: data.phoneNumber,
-				  roleId: getRoleName(data.roleId)
-				}));
-				setData(rows);
-			  } else {
-				console.error("Error: Invalid API response - Data is not an array", responseData);
-				setData([]);
-			  }
-			})
-			.catch((error) => console.error('Error:', error));
+					id: data.id,
+					name: data.name,
+					email: data.email,
+					gender: data.gender,
+					address: data.address,
+					phoneNumber: data.phoneNumber,
+					roleId: getRoleName(data.roleId)
+				  }));
+				  setData(rows);
+			 
+			} else {
+			  console.error("Lỗi: Phản hồi API không hợp lệ", responseData);
+			  setData([]); 
+			}
+		  } catch (error) {
+			console.error('Lỗi khi tìm nạp dữ liệu:', error);
+		  }
 		}
 		Read();
 	  }, [triggerRead]);

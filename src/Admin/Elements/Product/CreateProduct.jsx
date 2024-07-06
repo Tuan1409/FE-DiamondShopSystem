@@ -119,6 +119,7 @@ export default function CreateProduct(props) {
             if (response.ok) {
                 setSnackbarMessage('Product created successfully!');
                 setOpenSnackbar(true);
+                props.onProductCreated(); 
                 setTimeout(handleClose, 1000); 
             } else {
                 const errorData = await response.json();
@@ -211,8 +212,9 @@ export default function CreateProduct(props) {
                     onChange={(e) => setProductTypeId(e.target.value)}
                   >
                     {/* Replace with your actual product type options */}
-                    <MenuItem value="1">Product Type 1</MenuItem>
-                    <MenuItem value="2">Product Type 2</MenuItem>
+                    <MenuItem value="1">Gold</MenuItem>
+                    <MenuItem value="2">Platium</MenuItem>
+                    <MenuItem calue="3">Sliver</MenuItem>
                   </Select>
                 </FormControl>
     

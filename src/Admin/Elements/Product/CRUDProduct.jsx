@@ -8,14 +8,24 @@ import {
   TableRow,
   TablePagination,
   CircularProgress,
+  Button,
+  Snackbar // Import Snackbar
 } from '@mui/material';
 import CreateProduct from './CreateProduct';
-
+import DeleteIcon from '@mui/icons-material/Delete'; // Nhớ import DeleteIcon
+import UpdateProduct from './UpdateProduct'; // Import UpdateProduct 
 export default function ReadProduct() {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null); // Thêm state này 
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const handleUpdate = (product) => {
+    setSelectedProduct(product);
+    setOpenUpdateModal(true); // Mở modal
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -46,7 +56,40 @@ export default function ReadProduct() {
     };
 
     fetchProducts();
-  }, []); 
+  }, [openUpdateModal]); 
+  const handleDeleteProduct = async (productId) => {
+    try {
+      const response = await fetch(`https://localhost:7122/api/Product/DeleteProduct/${productId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Xóa sản phẩm thành công, cập nhật lại danh sách sản phẩm
+        setProducts(products.filter((product) => product.id !== productId));
+        setSnackbarOpen(true); // Hiển thị Snackbar
+        setTimeout(() => {
+          window.location.reload();
+        }, 100); 
+      } else {
+        console.error('Error deleting product:', response.status);
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  };
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+
+  const handleCloseUpdateModal = () => {
+    setSelectedProduct(null);
+  };
+
+
 
 
 
@@ -74,7 +117,11 @@ export default function ReadProduct() {
                       <TableCell>Price</TableCell>
                       <TableCell>Quantity</TableCell>
                       <TableCell>Images</TableCell>
+                      <TableCell>Status</TableCell> {/* Thêm cột trạng thái */} 
+                      <TableCell>chức năng</TableCell> 
+                      
                     </TableRow>
+                    
                     
                   </TableHead>
                   <TableBody>
@@ -98,6 +145,36 @@ export default function ReadProduct() {
                               />
                             ))}
                           </TableCell>
+                          <TableCell>
+                            {product.isDeleted ? 'Hết hàng' : 'Còn hàng'}
+                          </TableCell> {/* Hiển thị trạng thái */}
+                          <TableCell>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          startIcon={<DeleteIcon />}
+                          onClick={() => handleDeleteProduct(product.id)}
+                        >
+                          Delete
+                        </Button>
+                        {/* Update button */}
+                        <Button variant="outlined" color="warning" size="large" onClick={() => handleUpdate(product)}>
+                          Update
+                        </Button>
+                        {/* UpdateProduct modal */}
+                        <UpdateProduct
+                          open={!!selectedProduct && selectedProduct.id === product.id}
+                          onClose={handleCloseUpdateModal}
+                          product={selectedProduct}
+                          onProductUpdated={() => {
+                            // Sau khi cập nhật sản phẩm thành công, 
+                            // đóng modal và fetch lại danh sách sản phẩm
+                            handleCloseUpdateModal();
+                           
+                          }}
+                        /> 
+                      </TableCell>
+                
                         </TableRow>
                       ))}
                   </TableBody>
@@ -120,6 +197,12 @@ export default function ReadProduct() {
           ) : (
             <p>Không có sản phẩm nào.</p> 
           )}
+            <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000} // Ẩn sau 3 giây
+          onClose={handleCloseSnackbar}
+          message="Xóa sản phẩm thành công!"
+        />
         </>
       )}
     </div>

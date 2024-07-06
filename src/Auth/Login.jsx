@@ -17,8 +17,10 @@ export default function Login() {
     console.log("Password:", password); // In giá trị của password
     validateUser({ email: email, password: password })
       .then((response) => {
+          // localStorage.setItem("token", response.data.data.token);
         // Kiểm tra và chuyển hướng sau khi đăng nhập thành công
         const token = localStorage.getItem("token");
+        console.log(token);
         if (token) {
           const decodedToken = jwtDecode(token);
           console.log("decodedToken", decodedToken); // Kiểm tra decodedToken
