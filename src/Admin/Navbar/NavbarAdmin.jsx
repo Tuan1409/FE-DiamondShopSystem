@@ -24,6 +24,7 @@ export default function NavbarAdmin() {
                                 <CustomLink to="account">Account</CustomLink>
                                 <CustomLink to="product">Product</CustomLink>
                                 <CustomLink to="account">Promotion</CustomLink>
+                                <CustomLink to="order">Order</CustomLink>
                     
                     <CustomLink to='/'>
                         <button onClick={LogoutByButton} className='btn btn-danger btn-block'>Log out</button>

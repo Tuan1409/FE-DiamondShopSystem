@@ -10,6 +10,8 @@ import Admin from "./Admin/Admin";
 import Category from "./Admin/Elements/Category/Category";
 import Account from "./Admin/Elements/Account/Account";
 import Product from "./Admin/Elements/Product/Product";
+import Order from "./Admin/Elements/Order/Order.jsx";
+
 
 export default function App() {
   return (
@@ -28,6 +30,7 @@ export default function App() {
           <Route path="category" element={<Category />} />
           <Route path="account" element={<Account />} />
           <Route path="product" element={<Product />} />
+          <Route path="order" element={<Order />} />
         </Route>
       </Routes>
     </BrowserRouter>
