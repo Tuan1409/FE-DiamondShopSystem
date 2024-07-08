@@ -11,6 +11,7 @@ import Category from "./Admin/Elements/Category/Category";
 import Account from "./Admin/Elements/Account/Account";
 import Product from "./Admin/Elements/Product/Product";
 import Order from "./Admin/Elements/Order/Order.jsx";
+import Promotion from "./Admin/Elements/Promotion/Promotion.jsx";
 
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="account" element={<Account />} />
           <Route path="product" element={<Product />} />
           <Route path="order" element={<Order />} />
+          <Route path="promotion" element={<Promotion />} />
         </Route>
       </Routes>
     </BrowserRouter>

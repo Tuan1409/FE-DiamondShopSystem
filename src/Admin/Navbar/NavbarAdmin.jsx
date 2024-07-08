@@ -23,7 +23,7 @@ export default function NavbarAdmin() {
                                 <CustomLink to="category">Category</CustomLink>
                                 <CustomLink to="account">Account</CustomLink>
                                 <CustomLink to="product">Product</CustomLink>
-                                <CustomLink to="account">Promotion</CustomLink>
+                                <CustomLink to="promotion">Promotion</CustomLink>
                                 <CustomLink to="order">Order</CustomLink>
                     
                     <CustomLink to='/'>
