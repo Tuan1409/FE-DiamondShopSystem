@@ -40,14 +40,19 @@ export default function ReadPromotion() {
 
   useEffect(() => {
     const fetchPromotions = async () => {
+        const token = localStorage.getItem("token");
       setIsLoading(true);
       try {
-        const response = await fetch('https://localhost:7122/api/Promotion/GetPromotionList');
+        const response = await fetch('https://localhost:7122/api/Promotion/GetPromotionList', {
+            headers: {
+              'Authorization': `Bearer ${token}` // Thêm header Authorization
+            }
+          });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setPromotions(data);
+        setPromotions(data.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -107,11 +112,10 @@ export default function ReadPromotion() {
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Name</TableCell>
+                      <TableCell>Point</TableCell>
                       <TableCell>DiscountPercent</TableCell>
                       <TableCell>StartDate</TableCell>
-                      <TableCell>EndDate</TableCell>
-                      <TableCell>Status</TableCell> 
+                      
                       <TableCell>chức năng</TableCell> 
                     </TableRow>
                   </TableHead>
@@ -123,10 +127,9 @@ export default function ReadPromotion() {
                       )
                       .map((promotion) => (
                         <TableRow key={promotion.id}>
-                          <TableCell>{promotion.name}</TableCell>
-                          <TableCell>{promotion.discountPercent}</TableCell>
-                          <TableCell>{new Date(promotion.startDate).toLocaleDateString()}</TableCell>
-                          <TableCell>{new Date(promotion.endDate).toLocaleDateString()}</TableCell>
+                          <TableCell>{promotion.point}</TableCell>
+                          <TableCell>{promotion.discountPercentage}%</TableCell>
+                    
                           <TableCell>
                             {promotion.status ? 'Hoạt động' : 'Ngừng hoạt động'} 
                           </TableCell> 
