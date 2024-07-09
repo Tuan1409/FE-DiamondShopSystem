@@ -15,7 +15,7 @@ export default function Navbar() {
                         </Link>
                     </div>
                     <CustomLink to="/diamondPage/">Diamond</CustomLink>
-                    <CustomLink to="/product">Product</CustomLink>
+                    <CustomLink to="/productPage">Product</CustomLink>
                     <CustomLink to="/cart"><ShoppingCartIcon fontSize='large'></ShoppingCartIcon></CustomLink>
                     <CustomLink to="/login">Login</CustomLink>
                 </div>

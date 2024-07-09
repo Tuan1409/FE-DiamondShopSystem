@@ -1,0 +1,23 @@
+.diamond-detail-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%; 
+    margin: 0 auto;
+  }
+  
+.diamond-detail-image {
+  flex: 1;
+  height: auto;
+  margin: 0 auto;
+}
+
+.diamond-detail-content {
+  flex: 1;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.diamond-detail-content p {
+  margin: 5px 0;
+  font-size: 18px;
+}

@@ -1,31 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Grid, Card, CardMedia, CardContent, Typography, Button } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme) => ({
-  diamondShopContainer: {
-    padding: theme.spacing(4),
-  },
-  diamondGrid: {
-    marginTop: theme.spacing(4),
-  },
-  diamondCard: {
-    cursor: 'pointer',
-    '&:hover': {
-      boxShadow: theme.shadows[5],
-    },
-  },
-  diamondImage: {
-    height: 140,
-  },
-  viewMoreButton: {
-    marginTop: theme.spacing(4),
-  },
-}));
+import './DiamondPage.css'; 
 
 const DiamondPage = () => {
-  const classes = useStyles();
   const navigate = useNavigate();
   const [diamonds, setDiamonds] = useState([]);
 
@@ -37,7 +14,8 @@ const DiamondPage = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setDiamonds(data.items);
+        console.log(data);
+        setDiamonds(data.data || []);
       } catch (error) {
         console.error('Error fetching the diamond list:', error);
       }
@@ -51,36 +29,25 @@ const DiamondPage = () => {
   };
 
   return (
-    <Container className={classes.diamondShopContainer}>
-      <Typography variant="h4" component="h1">
-        The Diamonds
-      </Typography>
-
-      <Grid container spacing={4} className={classes.diamondGrid}>
+    <div className="diamond-shop-container">
+      <h1>The Diamonds</h1>
+      <div className="diamond-grid">
         {diamonds.map((diamond, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4}>
-            <Card className={classes.diamondCard} onClick={() => handleClick(diamond)}>
-              <CardMedia
-                className={classes.diamondImage}
-                image={diamond.images && diamond.images[0] ? diamond.images[0].urlPath : ''}
-                title={diamond.name}
-              />
-              <CardContent>
-                <Typography variant="h6">{diamond.name}</Typography>
-                <Typography variant="body2">Diamond Story</Typography>
-                <Typography variant="h6" color="textSecondary">
-                  {diamond.price}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+          <div key={index} className="diamond-card" onClick={() => handleClick(diamond)}>
+            <img
+              className="diamond-image"
+              src={diamond.images && diamond.images[0] ? diamond.images[0].urlPath : '/path/to/default/image.jpg'}
+              alt={diamond.name}
+            />
+            <div className="diamond-content">
+              <h2>{diamond.name}</h2>
+              <h3>{diamond.price.toLocaleString()} VND</h3>
+            </div>
+          </div>
         ))}
-      </Grid>
-      <Button variant="contained" color="primary" className={classes.viewMoreButton}>
-        View More
-      </Button>
-    </Container>
-  );
+      </div>
+    </div>
+  );  
 };
 
 export default DiamondPage;
