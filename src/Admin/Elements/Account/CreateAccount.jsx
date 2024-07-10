@@ -68,7 +68,9 @@ export default function CreateAccount(props) {
 	  };
 	
 	function CreateAccount(Email, Password, Name, Address, Gender, Phone, Role) {
+		const token = localStorage.getItem("token");
 		const url = 'https://localhost:7122/api/Account/CreateUser'
+		
 		const data = {
 			name: Name,
 			email: Email,
@@ -81,6 +83,10 @@ export default function CreateAccount(props) {
 		console.log(data);
 		fetch(url, {
 			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${token}` ,// Thêm header Authorization
+				
+			},
 			body: formData, // Gửi FormData trực tiếp
 		  })
 			.then((response) => {

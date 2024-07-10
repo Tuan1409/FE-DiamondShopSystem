@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
-
+import Autocomplete from '@mui/material/Autocomplete';
 export default function CreateProduct(props) {
     const [name, setName] = useState('');
     const [categoryId, setCategoryId] = useState(''); 
@@ -249,38 +249,48 @@ export default function CreateProduct(props) {
                 />
     
                 {/* Primary Diamonds */}
-                <div>
-    {primaryDiamonds.map((diamond, index) => (
-      <div key={index}>
-       <Typography>Diamond Name: {diamond.name}</Typography> {/* Hiển thị name */}
-      </div>
-    ))}
-    <Button
-      variant="outlined"
-      onClick={() => handleOpenDiamondModal('primary')}
-      sx={{ marginTop: '10px' }}
-    >
-      Add Primary Diamond
-    </Button>
-  </div>
+                <Autocomplete
+                  multiple
+                  id="primary-diamonds-select"
+                  options={diamonds}
+                  getOptionLabel={(diamond) => diamond.name}
+                  value={primaryDiamonds}
+                  onChange={(event, newValues) => {
+                    setPrimaryDiamonds(newValues);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Primary Diamonds"
+                      placeholder="Select primary diamonds"
+                      margin="normal"
+                      fullWidth
+                    />
+                  )}
+                />
+
 
 
             {/* Sub Diamonds */}
-            <div>
-            {subDiamonds.map((diamond, index) => (
-      <div key={index}>
-     <Typography>Diamond Name: {diamond.name}</Typography> {/* Hiển thị name */}
-      </div>
-    ))}
-    {/* ... */}
-    <Button
-      variant="outlined"
-      onClick={() => handleOpenDiamondModal('sub')}
-      sx={{ marginTop: '10px' }}
-    >
-      Add Sub Diamond
-    </Button>
-  </div>
+            <Autocomplete
+                  multiple
+                  id="sub-diamonds-select"
+                  options={diamonds}
+                  getOptionLabel={(diamond) => diamond.name}
+                  value={subDiamonds}
+                  onChange={(event, newValues) => {
+                    setSubDiamonds(newValues);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Sub Diamonds"
+                      placeholder="Select sub diamonds"
+                      margin="normal"
+                      fullWidth
+                    />
+                  )}
+                />
                 {/* Image Upload */}
                 <input
                   type="file"
