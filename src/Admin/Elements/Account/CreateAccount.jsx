@@ -97,8 +97,8 @@ export default function CreateAccount(props) {
 	  
 				setTimeout(() => {
 				  handleClose();
-				}, 1000); 
-	  
+				}, 500); 
+				window.location.reload(); 
 				return response.json(); 
 			  } else {
 				return response.json().then((errorData) => {

@@ -98,18 +98,23 @@ export default function CreateProduct(props) {
         formData.append('Quantity', quantity);
 
         // Handle diamond arrays - adjust based on your API requirements
-        primaryDiamonds.forEach((diamondId, index) => {
-            formData.append(`PrimaryDiamonds[${index}].DiamondId`, diamondId); 
+        primaryDiamonds.forEach((diamond) => {
+          formData.append('PrimaryDiamonds', diamond.id); 
         });
-        subDiamonds.forEach((diamondId, index) => {
-            formData.append(`SubDiamonds[${index}].DiamondId`, diamondId); 
+      
+        // Truyền diamondId từ SubDiamonds
+        subDiamonds.forEach((diamond) => {
+          formData.append('SubDiamonds', diamond.id); 
         });
-
+        
+        for (let [key, value] of formData.entries()) {
+          console.log(`${key}: ${value}`);
+        }
         // Handle image uploads
         productImages.forEach((image, index) => {
             formData.append('ProductImages', image);
         });
-
+        
         try {
             const response = await fetch('https://localhost:7122/api/Product/CreateProduct', { 
                 method: 'POST',
@@ -118,9 +123,10 @@ export default function CreateProduct(props) {
 
             if (response.ok) {
                 setSnackbarMessage('Product created successfully!');
-                setOpenSnackbar(true);
-                props.onProductCreated(); 
-                setTimeout(handleClose, 1000); 
+                setOpenSnackbar(true);                
+
+                setTimeout(handleClose, 500); 
+                //window.location.reload(); 
             } else {
                 const errorData = await response.json();
                 console.error("API Error:", errorData);

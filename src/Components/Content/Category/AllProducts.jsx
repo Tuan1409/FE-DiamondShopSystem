@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Category.css';
-
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetch('https://localhost:7122/api/Product/GetProducts')
       .then(res => res.json())
@@ -102,8 +103,11 @@ export default function AllProducts() {
           <div key={product.id} className='col-md-3 col-sm-6 mb-4'>
             <div className='card border-0'>
               <div className='d-flex flex-column'>
-                <div className='ratio ratio-1x1'>
-                  <img src={product.images[0]} alt={product.name} className='imgListProduct' />
+              <div className='ratio ratio-1x1'>
+              {console.log('product.id:', product.id)} 
+              <Link to={`/product/${product.id}`} className='text-decoration-none'>
+  <img src={product.images[0]} alt={product.name} className='imgListProduct' />
+</Link>
                 </div>
                 <div className='card-body p-0 pt-2'>
                   <div className='d-flex' id='textContainer'>

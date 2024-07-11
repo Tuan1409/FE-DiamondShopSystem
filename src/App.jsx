@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Home from "./Pages/Home";
 import Homepage from "./Pages/Homepage";
 import Ring from "./Pages/Ring";
@@ -12,6 +13,7 @@ import Account from "./Admin/Elements/Account/Account";
 import Product from "./Admin/Elements/Product/Product";
 import Order from "./Admin/Elements/Order/Order.jsx";
 import Promotion from "./Admin/Elements/Promotion/Promotion.jsx";
+import ProductDetails from "./Components/Content/Category/ProductDetails.jsx";  // Import component
 
 
 export default function App() {
@@ -23,6 +25,10 @@ export default function App() {
           <Route path="diamondPage" element={<DiamondPage />} />
           <Route path="ring" element={<Ring />} />
           <Route path="cart" element={<Cart />} /> {/* Đặt route /cart ở đây */}
+          <Route path="product/:productId" element={<ProductDetails />} /> 
+          
+          
+
         </Route> {/* Kết thúc component Home */} 
 
         <Route path="/login" element={<Login />} />
