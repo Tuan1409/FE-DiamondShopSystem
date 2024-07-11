@@ -38,7 +38,7 @@ export default function CRUDOrder() {
         return; // Hoặc chuyển hướng đến trang đăng nhập
       }
       try {
-        const response = await fetch('https://localhost:7122/api/Order', {
+        const response = await fetch('https://localhost:7122/api/Order/GetOrders', {
             headers: {
               'Authorization': `Bearer ${token}` // Thêm header Authorization
             }
