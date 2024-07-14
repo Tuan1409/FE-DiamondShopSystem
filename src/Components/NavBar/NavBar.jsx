@@ -1,9 +1,16 @@
 
 import './navBar.css';
 
-import { Link, useMatch, useResolvedPath, Outlet } from "react-router-dom"
+import { Link, useMatch, useResolvedPath, Outlet ,useNavigate } from "react-router-dom"
 
 export default function Navbar() {
+    const navigate = useNavigate();
+    const isLoggedIn = localStorage.getItem('token') !== null; // Kiểm tra xem người dùng đã đăng nhập hay chưa
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Xóa token khi logout
+        navigate('/login'); // Chuyển hướng về trang login
+    };
+
     return (
         <>
             <nav className='navbar-expand-lg bg-body-tertiary '>
@@ -21,7 +28,11 @@ export default function Navbar() {
                     <CustomLink to="/">Gemstones</CustomLink>
                     <CustomLink to="/vieworder">Order</CustomLink>
                     <CustomLink to="/cart"><img src="src\assets\img\shopping-cart (1).png" alt="" className='cartLogo' /></CustomLink>
-                    <CustomLink to="/login">Login</CustomLink>
+                    {isLoggedIn ? (
+                        <CustomLink to="/" onClick={handleLogout}>Logout</CustomLink>
+                    ) : (
+                        <CustomLink to="/login">Login</CustomLink>
+                    )}
 
                 </div>
             </nav >
