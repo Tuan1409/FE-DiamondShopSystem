@@ -80,8 +80,8 @@ export default function AllProducts() {
       });
 
       // Cập nhật số lượng sản phẩm sau khi thêm vào giỏ hàng
-      setProducts(prevProducts => 
-        prevProducts.map(p => 
+      setProducts(prevProducts =>
+        prevProducts.map(p =>
           p.id === productId ? { ...p, quantity: p.quantity - quantity } : p
         )
       );
@@ -103,11 +103,11 @@ export default function AllProducts() {
           <div key={product.id} className='col-md-3 col-sm-6 mb-4'>
             <div className='card border-0'>
               <div className='d-flex flex-column'>
-              <div className='ratio ratio-1x1'>
-              {console.log('product.id:', product.id)} 
-              <Link to={`/product/${product.id}`} className='text-decoration-none'>
-  <img src={product.images[0]} alt={product.name} className='imgListProduct' />
-</Link>
+                <div className='ratio ratio-1x1'>
+                 
+                  <Link to={`/product/${product.id}`} className='text-decoration-none'>
+                    <img src={product.images[0]} alt={product.name} className='imgListProduct' />
+                  </Link>
                 </div>
                 <div className='card-body p-0 pt-2'>
                   <div className='d-flex' id='textContainer'>

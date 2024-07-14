@@ -142,7 +142,7 @@ export default function Cart() {
       });
 
       // Chuyển hướng người dùng đến trang cảm ơn hoặc trang lịch sử đơn hàng
-      navigate('/'); // Thay '/order-history' bằng đường dẫn thực tế
+      navigate('/vieworder'); // Thay '/order-history' bằng đường dẫn thực tế
 
     } catch (error) {
       console.error('Lỗi:', error);
