@@ -20,8 +20,8 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete'; 
-import EditIcon from '@mui/icons-material/Edit'; 
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 export default function CRUDOrder() {
@@ -30,7 +30,7 @@ export default function CRUDOrder() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState(null); 
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [openOrderDetailDialog, setOpenOrderDetailDialog] = useState(false);
 
   const handleChangePage = (event, newPage) => {
@@ -52,11 +52,11 @@ export default function CRUDOrder() {
       }
       try {
         const response = await fetch('https://localhost:7122/api/Order', {
-            headers: {
-              'Authorization': `Bearer ${token}` // Thêm header Authorization
-            }
-          });
-        
+          headers: {
+            'Authorization': `Bearer ${token}` // Thêm header Authorization
+          }
+        });
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -79,8 +79,10 @@ export default function CRUDOrder() {
     "Đang chuẩn bị hàng",
     "Đang giao hàng",
     "Thành công",
+    "Thất bại",
   ];
   const handleOrderStatusChange = async (orderId, newStatus) => {
+
     const token = localStorage.getItem("token");
     if (!token) {
       console.error('Không tìm thấy mã thông báo xác thực.');
@@ -145,7 +147,8 @@ export default function CRUDOrder() {
                       <TableCell>Total Price</TableCell>
                       <TableCell>Order Date</TableCell>
                       <TableCell>Status</TableCell>
-                      <TableCell>Chi tiết</TableCell> 
+                      <TableCell></TableCell>
+                      <TableCell>Chi tiết</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -158,23 +161,37 @@ export default function CRUDOrder() {
                           <TableCell>{order.totalPrice}</TableCell>
                           <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                           <TableCell>
-                    <Select
-                      value={order.status}
-                      onChange={(e) => handleOrderStatusChange(order.id, e.target.value)}
-                      fullWidth
-                    >
-                      {statusOptions.map((status) => (
-                        <MenuItem key={status} value={status}>
-                          {status}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell>
+                            {order.status}
+                          </TableCell>
+                          <TableCell>
+                            {/* Hiển thị các nút thay đổi trạng thái */}
+                            {statusOptions
+                              .filter((status) => {
+                                const currentStatus = order.status;
+                                const allowedTransitions = {
+                                  "New Order": ["Đang chuẩn bị hàng"],
+                                  "Đang chuẩn bị hàng": ["Đang giao hàng"],
+                                  "Đang giao hàng": ["Thành công"],
+                                  "Thành công": ["Thất bại"],
+                                };
+                                return allowedTransitions[currentStatus]?.includes(status);
+                              })
+                              .map((status) => (
+                                <Button
+                                  key={status}
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleOrderStatusChange(order.id, status)}
+                                >
+                                  {status}
+                                </Button>
+                              ))}
+                          </TableCell>
                           <TableCell>
                             <Button variant="contained" color="primary" onClick={() => handleOpenOrderDetailDialog(order)}>
                               Xem chi tiết
                             </Button>
-                          </TableCell> 
+                          </TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
@@ -221,32 +238,32 @@ export default function CRUDOrder() {
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="h6">Sản phẩm</Typography>
-                      </Grid>
-                {selectedOrder.items.map((item, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Grid container spacing={1}>
-                      <Grid item xs={12} md={6}>
-                        <TextField label={`Sản phẩm ${index + 1}`} value={`Sản phẩm #${item.productId}`} disabled fullWidth />
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField label="Số lượng" value={item.quantity} disabled fullWidth />
-                      </Grid>
-                      <Grid item xs={12} md={3}>
-                        <TextField label="Giá" value={item.price.toLocaleString()} disabled fullWidth />
-                      </Grid>
                     </Grid>
+                    {selectedOrder.items.map((item, index) => (
+                      <Grid item xs={12} key={index}>
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} md={6}>
+                            <TextField label={`Sản phẩm ${index + 1}`} value={`Sản phẩm #${item.productId}`} disabled fullWidth />
+                          </Grid>
+                          <Grid item xs={12} md={3}>
+                            <TextField label="Số lượng" value={item.quantity} disabled fullWidth />
+                          </Grid>
+                          <Grid item xs={12} md={3}>
+                            <TextField label="Giá" value={item.price.toLocaleString()} disabled fullWidth />
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    ))}
                   </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
+                </>
+              )}
             </DialogContent>
           </Dialog>
           <Snackbar
             open={snackbarOpen}
             autoHideDuration={3000}
             onClose={handleCloseSnackbar}
-            message="Xóa đơn hàng thành công!"
+            message="Thay đổi trạng thái thành công!"
           />
         </>
       )}

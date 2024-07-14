@@ -9,7 +9,8 @@ export default function Cart() {
   const [cart, setCart] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const navigate = useNavigate();
-
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   useEffect(() => {
     const fetchCartData = async () => {
       if (!token) {
@@ -114,9 +115,26 @@ export default function Cart() {
       console.error("Chưa đăng nhập!");
       return;
     }
-
+    if (!address || !phoneNumber) {
+      toast.error("Vui lòng nhập đầy đủ thông tin địa chỉ và số điện thoại!", {
+        // ... (toast options)
+      });
+      return;
+    }
+     if (!/^\d{10}$/.test(phoneNumber)) {
+      toast.error("Số điện thoại phải có 10 chữ số!", {
+        // ... (toast options)
+      });
+      return;
+    }
     try {
-      const res = await fetch('https://localhost:7122/api/Order/place-order', {
+      const params = new URLSearchParams({
+        address: address,
+        phoneNumber: phoneNumber
+      });
+      const apiUrl = `https://localhost:7122/api/Order/place-order?${params.toString()}`;
+  
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -192,6 +210,26 @@ export default function Cart() {
           <div className="text-right">
             <h3>Tổng tiền: {calculateTotalPrice().toLocaleString()} VND</h3>
             {/* Nút Thanh toán */}
+            <div className="form-group">
+              <label htmlFor="address">Địa chỉ:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phoneNumber">Số điện thoại:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="phoneNumber"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </div>
             <button className="btn btn-primary" onClick={handlePlaceOrder}>
               Thanh toán
             </button>
