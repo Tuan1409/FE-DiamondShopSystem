@@ -47,7 +47,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
     updateProduct(
       product.id, // Sử dụng product.id
       name,
-      size,
+      
       price,
       wage,
       productTypeId,
@@ -58,7 +58,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
 
   const handleClear = () => {
     setName('');
-    setSize('');
+    
     setPrice(0);
     setWage(0);
     setProductTypeId(null);
@@ -96,7 +96,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
         },
         body: JSON.stringify({
           Name,
-          Size,
+          
           Price,
           Wage,
           ProductTypeId,
@@ -166,16 +166,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
           </div>
           <br />
           <div className="row">
-            <div className="col-6">
-              <TextField
-                label="Size"
-                variant="outlined"
-                className="form-control"
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
-                fullWidth
-              />
-            </div>
+            
             <div className="col-6">
               <TextField
                 label="Price"
@@ -224,7 +215,8 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
           <br />
           <div className="row">
             <div className="col-6">
-            <FormControl fullWidth margin="normal">
+  
+<FormControl fullWidth margin="normal">
   <InputLabel id="category-select-label">Category</InputLabel>
   <Select
     labelId="category-select-label"
@@ -232,8 +224,8 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
     onChange={(e) => setCategoryId(e.target.value)}
   >
     {categories.map((category) => (
-      <MenuItem key={category.id} value={category.id}> {/* Sửa category.categoryId thành category.id */}
-        {category.name}
+      <MenuItem key={category.id} value={category.id}>
+        {category.name} {category.size === 0 ? `(length = ${category.length})` : `(size = ${category.size})`}
       </MenuItem>
     ))}
   </Select>
@@ -264,7 +256,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
                 margin: '5px',
               }}
             >
-              Send
+              Update
             </Button>
             <Button
               type="button"

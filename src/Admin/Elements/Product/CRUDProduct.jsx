@@ -9,7 +9,17 @@ import {
   TablePagination,
   CircularProgress,
   Button,
-  Snackbar // Import Snackbar
+  Snackbar,
+  Dialog,
+  DialogTitle, // Import DialogTitle
+  DialogContent, 
+  DialogContentText,
+  TextField,
+  Grid, 
+  Typography,
+  Select,
+  MenuItem,
+  Link,
 } from '@mui/material';
 import CreateProduct from './CreateProduct';
 import DeleteIcon from '@mui/icons-material/Delete'; // Nhớ import DeleteIcon
@@ -22,11 +32,15 @@ export default function ReadProduct() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null); // Thêm state này 
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [openProductDetailsDialog, setOpenProductDetailsDialog] = useState(false); // Thêm state này
+  
   const handleUpdate = (product) => {
     setSelectedProduct(product);
     setOpenUpdateModal(true); // Mở modal
   };
-
+  const handleCloseUpdateModal = () => {
+    setSelectedProduct(null);
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -85,10 +99,15 @@ export default function ReadProduct() {
   };
 
 
-  const handleCloseUpdateModal = () => {
-    setSelectedProduct(null);
+  
+  const handleOpenProductDetailsDialog = (product) => {
+    setSelectedProduct(product);
+    setOpenProductDetailsDialog(true);
   };
 
+  const handleCloseProductDetailsDialog = () => {
+    setOpenProductDetailsDialog(false);
+  };
 
 
 
@@ -119,6 +138,7 @@ export default function ReadProduct() {
                       <TableCell>Images</TableCell>
                       <TableCell>Status</TableCell> {/* Thêm cột trạng thái */} 
                       <TableCell>chức năng</TableCell> 
+
                       
                     </TableRow>
                     
@@ -149,31 +169,34 @@ export default function ReadProduct() {
                             {product.isDeleted ? 'Hết hàng' : 'Còn hàng'}
                           </TableCell> {/* Hiển thị trạng thái */}
                           <TableCell>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          startIcon={<DeleteIcon />}
-                          onClick={() => handleDeleteProduct(product.id)}
-                        >
-                          Delete
-                        </Button>
-                        {/* Update button */}
-                        <Button variant="outlined" color="warning" size="large" onClick={() => handleUpdate(product)}>
-                          Update
-                        </Button>
-                        {/* UpdateProduct modal */}
-                        <UpdateProduct
-                          open={!!selectedProduct && selectedProduct.id === product.id}
-                          onClose={handleCloseUpdateModal}
-                          product={selectedProduct}
-                          onProductUpdated={() => {
-                            // Sau khi cập nhật sản phẩm thành công, 
-                            // đóng modal và fetch lại danh sách sản phẩm
-                            handleCloseUpdateModal();
-                           
-                          }}
-                        /> 
-                      </TableCell>
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              startIcon={<DeleteIcon />}
+                              onClick={() => handleDeleteProduct(product.id)}
+                            >
+                              Delete
+                            </Button>
+                            {/* Update button */}
+                            <Button variant="outlined" color="warning" size="large" onClick={() => handleUpdate(product)}>
+                              Update
+                            </Button>
+                            <Button variant="contained" color="primary" onClick={() => handleOpenProductDetailsDialog(product)}>
+                              Xem chi tiết
+                            </Button>
+                            {/* UpdateProduct modal */}
+                            <UpdateProduct
+                              open={!!selectedProduct && selectedProduct.id === product.id}
+                              onClose={handleCloseUpdateModal}
+                              product={selectedProduct}
+                              onProductUpdated={() => {
+                                // Sau khi cập nhật sản phẩm thành công, 
+                                // đóng modal và fetch lại danh sách sản phẩm
+                                handleCloseUpdateModal();
+                                
+                              }}
+                            /> 
+                          </TableCell>
                 
                         </TableRow>
                       ))}
@@ -203,6 +226,113 @@ export default function ReadProduct() {
           onClose={handleCloseSnackbar}
           message="Xóa sản phẩm thành công!"
         />
+
+        {/* Dialog hiển thị chi tiết sản phẩm */}
+        <Dialog open={openProductDetailsDialog} onClose={handleCloseProductDetailsDialog} fullWidth>
+  <DialogTitle>Chi tiết sản phẩm #{selectedProduct?.id}</DialogTitle>
+  <DialogContent>
+    {selectedProduct && (
+      <>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Thông tin sản phẩm</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="ID" value={selectedProduct.id} disabled fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Tên sản phẩm" value={selectedProduct.name} disabled fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Loại sản phẩm" value={selectedProduct.productType.material} disabled fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Danh mục" value={selectedProduct.category.name} disabled fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Trọng lượng" value={selectedProduct.weight} disabled fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Giá" value={selectedProduct.price.toLocaleString()} disabled fullWidth />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label="Số lượng" value={selectedProduct.quantity} disabled fullWidth />
+          </Grid>
+
+          {/* Hiển thị thông tin Primary Diamond */}
+          {selectedProduct.primaryDiamonds.length > 0 && (
+            <Grid item xs={12}>
+              <Typography variant="h6">Kim cương chính</Typography>
+            </Grid>
+          )}
+          {selectedProduct.primaryDiamonds.map((diamond, index) => (
+            <Grid item xs={12} key={index}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Tên" value={diamond.name} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Trọng lượng" value={diamond.caratWeight} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Độ tinh khiết" value={diamond.clarityName} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Độ cắt" value={diamond.cutName} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Màu sắc" value={diamond.color} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Giá" value={diamond.price.toLocaleString()} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Số lượng" value={diamond.quantity} disabled fullWidth />
+                </Grid>
+              </Grid>
+            </Grid>
+          ))}
+
+          {/* Hiển thị thông tin Sub Diamond */}
+          {selectedProduct.subDiamonds.length > 0 && (
+            <Grid item xs={12}>
+              <Typography variant="h6">Kim cương phụ</Typography>
+            </Grid>
+          )}
+          {selectedProduct.subDiamonds.map((diamond, index) => (
+            <Grid item xs={12} key={index}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Tên" value={diamond.name} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Trọng lượng" value={diamond.caratWeight} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Độ tinh khiết" value={diamond.clarityName} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Độ cắt" value={diamond.cutName} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Màu sắc" value={diamond.color} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Giá" value={diamond.price.toLocaleString()} disabled fullWidth />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField label="Số lượng" value={diamond.quantity} disabled fullWidth />
+                </Grid>
+              </Grid>
+            </Grid>
+          ))}
+
+          {/* ... thêm các trường thông tin khác nếu cần ... */}
+        </Grid>
+      </>
+    )}
+  </DialogContent>
+</Dialog>
         </>
       )}
     </div>
