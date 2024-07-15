@@ -80,10 +80,12 @@ export default function ViewOrder() {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{order.id}</td>
-                                        <td>{order.status}</td>
-
                                         <td>{order.orderDate}</td>
-                                        <td>{order.discountPercentage}</td>
+                                        <td>{order.discountPercentage}%</td>
+                                        
+
+                                       
+                                        
 
                                         <td>{order.totalPrice.toLocaleString()} VND</td>
                                         <td>{order.status}</td>

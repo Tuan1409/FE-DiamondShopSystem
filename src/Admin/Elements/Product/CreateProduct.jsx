@@ -124,9 +124,8 @@ export default function CreateProduct(props) {
             if (response.ok) {
                 setSnackbarMessage('Product created successfully!');
                 setOpenSnackbar(true);                
-
                 setTimeout(handleClose, 500); 
-                //window.location.reload(); 
+                window.location.reload(); 
             } else {
                 const errorData = await response.json();
                 console.error("API Error:", errorData);
