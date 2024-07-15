@@ -47,7 +47,7 @@ export default function CreateProduct(props) {
                 if (response.ok) {
                     const data = await response.json();
                     setCategories(data.data);
-                    console.log(categories, typeof categories);
+                  
                 } else {
                     console.error("Lỗi khi lấy dữ liệu danh mục");
                 }
@@ -194,8 +194,7 @@ export default function CreateProduct(props) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
-    
-    <FormControl fullWidth margin="normal">
+   <FormControl fullWidth margin="normal">
   <InputLabel id="category-select-label">Category</InputLabel>
   <Select
     labelId="category-select-label"
@@ -203,13 +202,12 @@ export default function CreateProduct(props) {
     onChange={(e) => setCategoryId(e.target.value)}
   >
     {categories.map((category) => (
-      <MenuItem key={category.id} value={category.id}> {/* Sửa category.categoryId thành category.id */}
-        {category.name}
+      <MenuItem key={category.id} value={category.id}>
+        {category.name} {category.size === 0 ? `(length = ${category.length})` : `(size = ${category.size})`}
       </MenuItem>
     ))}
   </Select>
 </FormControl>
-    
                 <FormControl fullWidth margin="normal">
                   <InputLabel id="productType-select-label">Product Type</InputLabel>
                   <Select

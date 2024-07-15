@@ -76,7 +76,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 
 	async function updateAccount(Id, Email, Name, Gender, Phone, Address, Password, RoleId, Point) {
 		const url = `https://localhost:7122/api/Account/UpdateAccount/${Id}`;
-	
+	     const token = localStorage.getItem("token");
 		const formData = new FormData();
 		
 		formData.append('Name', Name); // Chú ý tên trường
@@ -91,6 +91,10 @@ export default function UpdateAccount({ onClick, ...props }) {
 		try {
 		  const response = await fetch(url, {
 			method: 'PUT',
+			headers: {
+				'Authorization': `Bearer ${token}` ,// Thêm header Authorization
+				//'Content-Type': 'application/json' // Loại bỏ Content-Type khi sử dụng FormData
+			},
 			body: formData,
 		  });
 	

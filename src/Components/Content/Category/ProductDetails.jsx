@@ -30,7 +30,7 @@ export default function ProductDetails() {
     </div>
     <div className="product-info">
       <h2 className="product-title">{product.name}</h2>
-      <p className="product-price">{product.price}</p>
+      <p className="product-price">{product.price}VND</p>
       <p className="product-material">Chất liệu: {product.productType.material}</p>
       <p className="product-weight">Trọng lượng: {product.weight}</p>
       <p className="product-description">{product.description}</p>

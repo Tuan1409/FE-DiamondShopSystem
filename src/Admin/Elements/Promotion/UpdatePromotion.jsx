@@ -83,7 +83,7 @@ export default function UpdatePromotion({ open, onClose, promotion, onPromotionU
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`HTTP error! status: ${response.status}`);
-        setOpenSnackbar(false); // Ẩn Snackbar khi có lỗi
+        
       }
 
       onPromotionUpdated(); // Gọi hàm callback từ component cha
