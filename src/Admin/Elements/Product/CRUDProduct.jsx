@@ -169,6 +169,9 @@ export default function ReadProduct() {
                             {product.isDeleted ? 'Hết hàng' : 'Còn hàng'}
                           </TableCell> {/* Hiển thị trạng thái */}
                           <TableCell>
+                          <Button variant="contained" color="primary" onClick={() => handleOpenProductDetailsDialog(product)}>
+                              Xem chi tiết
+                            </Button>
                             <Button
                               variant="outlined"
                               color="error"
@@ -181,9 +184,7 @@ export default function ReadProduct() {
                             <Button variant="outlined" color="warning" size="large" onClick={() => handleUpdate(product)}>
                               Update
                             </Button>
-                            <Button variant="contained" color="primary" onClick={() => handleOpenProductDetailsDialog(product)}>
-                              Xem chi tiết
-                            </Button>
+                            
                             {/* UpdateProduct modal */}
                             <UpdateProduct
                               open={!!selectedProduct && selectedProduct.id === product.id}
