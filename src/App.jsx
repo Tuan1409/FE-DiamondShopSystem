@@ -16,6 +16,8 @@ import Promotion from "./Admin/Elements/Promotion/Promotion.jsx";
 import ProductDetails from "./Components/Content/Category/ProductDetails.jsx";  // Import component
 import ViewOrder from "./Components/Content/Category/ViewOrder.jsx";
 import Profile from "./Auth/Profile.jsx";
+import ProductType from "./Admin/Elements/Productype/ProductType.jsx";
+import Diamond from "./Admin/Elements/Diamond/Diamond.jsx";
 
 
 export default function App() {
@@ -41,8 +43,10 @@ export default function App() {
           <Route path="category" element={<Category />} />
           <Route path="account" element={<Account />} />
           <Route path="product" element={<Product />} />
+          <Route path="productype" element={<ProductType />} />
           <Route path="order" element={<Order />} />
           <Route path="promotion" element={<Promotion />} />
+          <Route path="diamond" element={<Diamond />} />
         </Route>
       </Routes>
     </BrowserRouter>

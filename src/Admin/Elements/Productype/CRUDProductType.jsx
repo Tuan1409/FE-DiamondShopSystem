@@ -18,6 +18,8 @@ const UpdateButton = styled(Button)(({ theme }) => ({
 export default function CRUDProductType() {
 	const [productTypes, setProductTypes] = useState([]); // Use productTypes instead of data
 	const [nameProductType, setnameProductType] = useState(null);
+	const [materialProductType, setMaterialProductType] = useState(null); // Add state for material
+	const [priceProductType, setPriceProductType] = useState(null); // Add state for price
 	const [showDelete, setShowDelete] = useState(false);
 	const [selectedForDeletion, setSelectedForDeletion] = useState(null);
 	const [selectedForUpdate, setSelectedForUpdate] = useState(null);
@@ -41,10 +43,12 @@ export default function CRUDProductType() {
 		}
 	}
 
-	function UpdateProductType(Id, Name, IsDeleted) {
+	function UpdateProductType(Id, Name, Material, Price, IsDeleted) { // Update function to include Material and Price
 		const url = 'https://localhost:7122/api/ProductType/UpdateProductType/' + Id;
 		const Data = {
 			"name": Name,
+			"material": Material, // Add material to Data object
+			"price": Price, // Add price to Data object
 			"isDeleted": IsDeleted
 		};
 		fetch(url, {
@@ -93,13 +97,17 @@ export default function CRUDProductType() {
 		const productTypeToUpdate = productTypes.find(c => c.id === id);
 		if (productTypeToUpdate) {
 			setnameProductType(productTypeToUpdate.name);
+			setMaterialProductType(productTypeToUpdate.material); // Update material state
+			setPriceProductType(productTypeToUpdate.price); // Update price state
 		}
 	};
 
-	function handleSubmitUpdate(id, name) {
-		UpdateProductType(id, name, false); // Update IsDeleted to false
+    function handleSubmitUpdate(id, material, price) { // bỏ tên
+		UpdateProductType(id, null, material, price, false); // Update IsDeleted to false
 		setSelectedForUpdate(null);
 		setnameProductType(null);
+		setMaterialProductType(null); // Reset material state
+		setPriceProductType(null); // Reset price state
 	}
 
 	return (
@@ -111,8 +119,9 @@ export default function CRUDProductType() {
 							<thead>
 								<tr>
 									<th>Id</th>
-									<th>Tên</th>
 									<th>Trạng thái</th>
+                                    <th>Chất liệu</th>
+                                    <th>Giá</th>
 									<th></th>
 									<th><CreateProductType onProductTypeCreated={() => setTriggerRead(prev => !prev)} /></th>
 								</tr>
@@ -122,15 +131,22 @@ export default function CRUDProductType() {
 									productTypes.map((productType, index) => (
 										<tr key={productType.id}>
 											<td>{index + 1}</td>
+											
 											<td style={{
 												maxWidth: '11vw',
 												minWidth: '11vw'
 											}}>
-												{selectedForUpdate !== productType.id && (productType.name)}
+												{productType.isDeleted ? 'Đã hủy' : 'Đang sử dụng'}
+											</td>
+											<td style={{
+												maxWidth: '11vw',
+												minWidth: '11vw'
+											}}>
+												{selectedForUpdate !== productType.id && (productType.material)}
 
 												{selectedForUpdate === productType.id && !showUpdate && (
 													<>
-														<form onSubmit={() => handleSubmitUpdate(productType.id, nameProductType)}>
+														<form onSubmit={() => handleSubmitUpdate(productType.id, materialProductType, priceProductType)}> {/* bỏ tên */}
 															<TextField disabled
 																id="outlined-disabled"
 																label="Id"
@@ -139,17 +155,31 @@ export default function CRUDProductType() {
 																	margin: '10px'
 																}} />
 
-															<TextField
-																required
-																defaultValue={productType.name}
-																onChange={(e) => setnameProductType(e.target.value)}
-																id="outlined-basic"
-																label="Tên"
-																variant="outlined"
-																sx={{
-																	margin: '10px'
-																}}
-															/> <br />
+															{/* Bỏ trường TextField cho tên */}
+
+                                                            <TextField
+                                                                required
+                                                                defaultValue={productType.material}
+                                                                onChange={(e) => setMaterialProductType(e.target.value)}
+                                                                id="outlined-basic"
+                                                                label="Chất liệu"
+                                                                variant="outlined"
+                                                                sx={{
+                                                                    margin: '10px'
+                                                                }}
+                                                            /> <br />
+                                                            
+                                                            <TextField
+                                                                type="number"
+                                                                defaultValue={productType.price}
+                                                                onChange={(e) => setPriceProductType(parseInt(e.target.value))}
+                                                                id="outlined-basic"
+                                                                label="Giá"
+                                                                variant="outlined"
+                                                                sx={{
+                                                                    margin: '10px'
+                                                                }}
+                                                            /> <br />
 
 															<Button
 																type="submit"
@@ -164,7 +194,8 @@ export default function CRUDProductType() {
 															<Button type="button"
 																value="Clear" onClick={() => {
 																	setShowUpdate(!showUpdate)
-																	setnameProductType(null)
+																	setMaterialProductType(null); // Reset material state
+                                                                    setPriceProductType(null); // Reset price state
 																	setSelectedForUpdate(null)
 																}}
 																variant="contained" size="large" color="error"
@@ -180,11 +211,12 @@ export default function CRUDProductType() {
 
 												)}
 											</td>
+										
 											<td style={{
 												maxWidth: '11vw',
 												minWidth: '11vw'
 											}}>
-												{productType.isDeleted ? 'Đã hủy' : 'Đang sử dụng'}
+												{productType.price}
 											</td>
 											<td style={{
 												maxWidth: '11vw',

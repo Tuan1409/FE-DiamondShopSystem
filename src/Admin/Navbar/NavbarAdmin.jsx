@@ -21,6 +21,8 @@ export default function NavbarAdmin() {
 
                   
                                 <CustomLink to="category">Category</CustomLink>
+                                <CustomLink to="productype">Productype</CustomLink>
+                                <CustomLink to="diamond">Diamond</CustomLink>
                                 <CustomLink to="account">Account</CustomLink>
                                 <CustomLink to="product">Product</CustomLink>
                                 <CustomLink to="promotion">Promotion</CustomLink>

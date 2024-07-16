@@ -111,6 +111,8 @@ export default function CreateProduct(props) {
           console.log(`${key}: ${value}`);
         }
         // Handle image uploads
+
+        
         productImages.forEach((image, index) => {
             formData.append('ProductImages', image);
         });

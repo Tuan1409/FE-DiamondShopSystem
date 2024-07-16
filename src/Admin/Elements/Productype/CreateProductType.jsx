@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import { TextField, Button, Box, Snackbar, Alert } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
 import Modal from '@mui/material/Modal';
 
 export default function CreateProductType(props) {
-  const [name, setName] = useState('');
+  const [material, setMaterial] = useState('');
+  const [price, setPrice] = useState(0);
   const [data, setData] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Add state for Snackbar
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
-    setName('');
+    setMaterial('');
+    setPrice(0);
     setData(null);
   };
 
@@ -19,25 +23,30 @@ export default function CreateProductType(props) {
     // This effect runs when `data` changes
     if (data && data.status !== 400) {
       // Assuming `data.status` not being 400 means success
-      setName(''); // Reset the nameCategory only on successful creation
+      setMaterial(''); // Reset the nameCategory only on successful creation
+      setPrice(0);
+      setOpenSnackbar(true); // Open Snackbar when creation is successful
+      setOpen(false); // Close the Modal after successful creation
     }
   }, [data]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
-    Create(name);
+    Create(material, price);
   };
 
   const handleClear = () => {
-    setName('');
+    setMaterial('');
+    setPrice(0);
     setData(null);
   };
 
-  function Create(Name) {
+  function Create(Material, Price) {
     const url = 'https://localhost:7122/api/ProductType/CreateProductType';
     const formData = new FormData(); // Tạo FormData
-    formData.append('name', Name);
+    formData.append('material', Material);
+    formData.append('price', Price);
     formData.append('isDeleted', false);
 
     fetch(url, {
@@ -51,6 +60,13 @@ export default function CreateProductType(props) {
       })
       .catch((error) => console.error('Error:', error));
   }
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   return (
     <div style={{
@@ -85,10 +101,21 @@ export default function CreateProductType(props) {
               <div className='col'>
                 <TextField
                   type="text"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
+                  value={material}
+                  onChange={e => setMaterial(e.target.value)}
                   id="outlined-basic"
-                  label="Tên"
+                  label="Chất liệu"
+                  variant="outlined"
+                  className='form-control'
+                />
+              </div>
+              <div className='col'>
+                <TextField
+                  type="number"
+                  value={price}
+                  onChange={e => setPrice(parseInt(e.target.value))}
+                  id="outlined-basic"
+                  label="Giá"
                   variant="outlined"
                   className='form-control'
                 />
@@ -126,6 +153,11 @@ export default function CreateProductType(props) {
           </div>
         </Box>
       </Modal>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          Tạo loại sản phẩm thành công!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
