@@ -11,6 +11,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const [address, setAddress] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  
   useEffect(() => {
     const fetchCartData = async () => {
       if (!token) {
@@ -122,6 +123,12 @@ export default function Cart() {
       return;
     }
      
+    if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+      toast.error("Số điện thoại phải là 10 chữ số!", {
+        // ... (toast options)
+      });
+      return;
+    }
     try {
       const params = new URLSearchParams({
         address: address,
@@ -226,7 +233,7 @@ export default function Cart() {
               />
             </div>
             <button className="btn btn-primary" onClick={handlePlaceOrder}>
-              Thanh toán
+              Đặt hàng 
             </button>
           </div>
         </div>

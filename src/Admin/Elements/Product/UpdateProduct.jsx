@@ -29,6 +29,8 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
   const [size, setSize] = useState(0);
   
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
 
   useEffect(() => {
     // Cập nhật state khi product thay đổi
@@ -46,6 +48,11 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!validateForm()) {
+      setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+      setOpenSnackbar(true);
+      return;
+      }
     updateProduct(
       product.id, // Sử dụng product.id
       name,
@@ -134,7 +141,18 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
       }, 100); // Reload sau 3 giây
     }
   }, [openSnackbar]);
-
+  function validateForm() {
+    
+    return (
+      name &&
+      categoryId &&
+      productTypeId &&
+      weight &&
+      wage &&
+      quantity 
+      
+    );
+  }
   return (
     <div>
     <Modal open={open} onClose={onClose}>
@@ -157,6 +175,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
           <div className="row">
             <div className="col-12">
               <TextField
+              disabled
                 label="Name"
                 variant="outlined"
                 className="form-control"
@@ -171,6 +190,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
             
             <div className="col-6">
               <TextField
+              disabled
                 label="Price"
                 variant="outlined"
                 className="form-control"
@@ -178,6 +198,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
                 onChange={(e) => setPrice(parseFloat(e.target.value))}
                 fullWidth
                 type="number" // Đặt type="number" cho input số
+                
               />
             </div>
           </div>
@@ -186,28 +207,35 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
             
             <div className="col-6">
               <TextField
-                label="Weight"
-                variant="outlined"
-                className="form-control"
-                value={weight}
-                onChange={(e) => setWeight(parseFloat(e.target.value))}
-                fullWidth
-                type="number" // Đặt type="number" cho input số
-              />
+                  label="Weight"
+                  variant="outlined"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  required
+                  inputProps={{ min: 0, step: "any" }}
+                />
+    
+              
             </div>
           </div>
+          
           <br />
           <div className="row">
             <div className="col-6">
-              <TextField
-                label="Wage"
-                variant="outlined"
-                className="form-control"
-                value={wage}
-                onChange={(e) => setWage(parseFloat(e.target.value))}
-                fullWidth
-                type="number"
-              />
+            <TextField
+                  label="Wage"
+                  variant="outlined"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  value={wage}
+                  onChange={(e) => setWage(e.target.value)}
+                  required
+                  inputProps={{ min: 0, step: "any" }}
+                />
             </div>
             <div className="col-6">
               <FormControl fullWidth>
@@ -219,6 +247,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
                   label="Product Type"
                   value={productTypeId}
                   onChange={(e) => setProductTypeId(parseInt(e.target.value, 10))}
+                  required
                   className="form-control"
                 >
                   {/* Replace with actual product types from your API */}
@@ -239,6 +268,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
     labelId="category-select-label"
     value={categoryId}
     onChange={(e) => setCategoryId(e.target.value)}
+    required
   >
     {categories.map((category) => (
       <MenuItem key={category.id} value={category.id}>
@@ -249,15 +279,17 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
 </FormControl>
             </div>
             <div className="col-6">
-              <TextField
-                label="Quantity"
-                variant="outlined"
-                className="form-control"
-                value={quantity}
-                onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
-                fullWidth
-                type="number"
-              />
+            <TextField
+                  label="Quantity"
+                  variant="outlined"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  required
+                  inputProps={{ min: 0 }}
+                />
             </div>
           </div>
           <br />

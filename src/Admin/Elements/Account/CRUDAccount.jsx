@@ -16,6 +16,7 @@ export default function ReadAccount() {
 	const [selectedForDeletion, setSelectedForDeletion] = useState(null)
 	const [showDelete, setShowDelete] = useState(false)
 	const [selectedForUpdate, setSelectedForUpdate] = useState(null)
+	const [deleteError, setDeleteError] = useState(null); // Thêm state để lưu lỗi (nếu có)
 	const columns = [
 		{ id: '#', label: '#', align: 'left', },
 		{ id: 'Name', label: 'Name', align: 'left', },
@@ -25,6 +26,7 @@ export default function ReadAccount() {
 		{ id: 'Address', label: 'Address', align: 'left', },
 		{ id: 'Role', label: 'Role', align: 'left', },
 		{ id: 'Point', label: 'Point', align: 'left', },
+		{ id: 'Status', label: 'Status', align: 'left', },
 	];
 
 
@@ -87,7 +89,7 @@ export default function ReadAccount() {
 					phoneNumber: data.phoneNumber,
 					point: data.point,
 					roleId: getRoleName(data.roleId),
-					roleId2 :data.roleId
+					isDeleted: data.isDeleted,
 				  }));
 				  setData(rows);
 			 
@@ -107,12 +109,18 @@ export default function ReadAccount() {
 		setShowDelete(true)
 	}
 	function handleSubmitDelete(idAccount) {
+		console.log("aaaa"+idAccount);
+		const token = localStorage.getItem("token");
 		if (idAccount) {
-			const url = 'https://localhost:7122/api/Account/DeleteAccount/' + idAccount
+			const url = `https://localhost:7122/api/Account/DeleteAccount/${idAccount}`;
+
+			
 			fetch(url, {
 				method: 'DELETE',
 				headers: {
-					'Accept': '*/*'
+					'Accept': '*/*',
+					'Authorization': `Bearer ${token}` // Thêm mã thông báo bearer vào tiêu đề
+			  
 				},
 			})
 				.then(responseData => {
@@ -121,6 +129,7 @@ export default function ReadAccount() {
 				})
 		}
 	}
+
 	const handleUpdate = (id) => {
 		setSelectedForUpdate(id)
 	}
@@ -175,6 +184,7 @@ export default function ReadAccount() {
 										<TableCell>
 											{data.point}
 										</TableCell>
+										<TableCell>{data.isDeleted ? 'Inactive' : 'Active'}</TableCell> {/* Hiển thị trạng thái */}
 										<TableCell>
 											<Button variant="outlined" color="error"
 												size="large" endIcon={<DeleteIcon />}

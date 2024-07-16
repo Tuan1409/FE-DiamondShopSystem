@@ -18,12 +18,12 @@ import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
 export default function CreateDiamond(props) {
   
   const [caratWeight, setCaratWeight] = useState('');
-  const [cutName, setCutName] = useState('');
+  const [cut, setCut] = useState('');
   const [color, setColor] = useState('');
-  const [clarityName, setClarityName] = useState('');
+  const [clarity, setClarity] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [originName, setOriginName] = useState('');
+  const [origin, setOrigin] = useState('');
   const [diamondImages, setDiamondImages] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -31,21 +31,27 @@ export default function CreateDiamond(props) {
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   // Danh sách các tùy chọn cho Cut, Color, Clarity
-  const cutOptions = ['Excellent', 'Very Good', 'Good', 'Fair', 'Poor'];
+  const cutOptions = ['Excellent', 'VeryGood', 'Good', 'Fair', 'Poor'];
   const colorOptions = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
   const clarityOptions = ['FL', 'IF', 'VVS1', 'VVS2', 'VS1', 'VS2', 'SI1', 'SI2', 'I1', 'I2', 'I3'];
+  const originOptios=['GIA',
+     'IGI',
+	'AGS',
+	'HRD',
+	'EGL',
+	'CGL'];
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setName('');
     setCaratWeight('');
-    setCutName('');
+    setCut('');
     setColor('');
-    setClarityName('');
+    setClarity('');
     setPrice('');
     setQuantity('');
-    setOriginName('');
+    setOrigin('');
     setDiamondImages([]);
   };
 
@@ -56,13 +62,17 @@ export default function CreateDiamond(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+	if (!validateForm()) {
+		setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+		setOpenSnackbar(true);
+		return;
+	  }
     const formData = new FormData();
    
-    formData.append('OriginName', originName);
+    formData.append('Origin', origin);
     formData.append('CaratWeight', parseFloat(caratWeight)); // Chuyển đổi sang số
-    formData.append('ClarityName', clarityName);
-    formData.append('CutName', cutName);
+    formData.append('Clarity', clarity);
+    formData.append('Cut', cut);
     formData.append('Color', color);
     formData.append('Price', parseFloat(price)); // Chuyển đổi sang số
     formData.append('Quantity', parseInt(quantity)); // Chuyển đổi sang số nguyên
@@ -101,7 +111,17 @@ export default function CreateDiamond(props) {
   const handleImageChange = (event) => {
     setDiamondImages([...event.target.files]);
   };
-
+  function validateForm() {
+    return (
+		origin &&
+		caratWeight &&
+		clarity &&
+		cut &&
+		color &&
+      price &&
+      quantity
+    );
+  }
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -129,14 +149,31 @@ export default function CreateDiamond(props) {
 
             <form onSubmit={handleSubmit}>
               
-              <TextField
+              {/* <TextField
                 label="Origin Name"
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                value={originName}
-                onChange={(e) => setOriginName(e.target.value)}
-              />
+                value={origin}
+                onChange={(e) => setOrigin(e.target.value)}
+              /> */}
+			      <FormControl fullWidth margin="normal" >
+                <InputLabel id="cut-label">Origin</InputLabel>
+                <Select
+                  labelId="cut-label"
+                  id="origin"
+                  value={origin}
+                  onChange={(e) => setOrigin(e.target.value)}
+				  required
+                >
+                  {originOptios.map((cut) => (
+                    <MenuItem key={cut} value={cut}>
+                      {cut}
+                    </MenuItem>
+                  ))}
+                </Select>
+				
+              </FormControl>
               <TextField
                 label="Carat Weight"
                 variant="outlined"
@@ -144,6 +181,7 @@ export default function CreateDiamond(props) {
                 margin="normal"
                 value={caratWeight}
                 onChange={(e) => setCaratWeight(e.target.value)}
+				required
                 type="number" // Đảm bảo người dùng chỉ nhập số
               />
 
@@ -153,8 +191,9 @@ export default function CreateDiamond(props) {
                 <Select
                   labelId="cut-label"
                   id="cut"
-                  value={cutName}
-                  onChange={(e) => setCutName(e.target.value)}
+                  value={cut}
+                  onChange={(e) => setCut(e.target.value)}
+				  required
                 >
                   {cutOptions.map((cut) => (
                     <MenuItem key={cut} value={cut}>
@@ -171,6 +210,7 @@ export default function CreateDiamond(props) {
                   id="color"
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
+				  required
                 >
                   {colorOptions.map((c) => (
                     <MenuItem key={c} value={c}>
@@ -185,8 +225,9 @@ export default function CreateDiamond(props) {
                 <Select
                   labelId="clarity-label"
                   id="clarity"
-                  value={clarityName}
-                  onChange={(e) => setClarityName(e.target.value)}
+                  value={clarity}
+                  onChange={(e) => setClarity(e.target.value)}
+				  required
                 >
                   {clarityOptions.map((clarity) => (
                     <MenuItem key={clarity} value={clarity}>
@@ -203,6 +244,7 @@ export default function CreateDiamond(props) {
                 margin="normal"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
+				required
                 type="number" // Đảm bảo người dùng chỉ nhập số
               />
               <TextField
@@ -212,6 +254,7 @@ export default function CreateDiamond(props) {
                 margin="normal"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
+				required
                 type="number" // Đảm bảo người dùng chỉ nhập số nguyên
               />
 
@@ -222,6 +265,7 @@ export default function CreateDiamond(props) {
                 type="file"
                 multiple
                 onChange={handleImageChange}
+				required
               />
 
               <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
@@ -232,7 +276,7 @@ export default function CreateDiamond(props) {
                   startIcon={<SendIcon />}
                   sx={{ mr: 2 }}
                 >
-                  Submit
+                  Create
                 </Button>
 
                 <Button

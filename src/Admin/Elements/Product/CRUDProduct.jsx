@@ -153,7 +153,7 @@ export default function ReadProduct() {
                       .map((product) => (
                         <TableRow key={product.id}>
                           <TableCell>{product.name}</TableCell>
-                          <TableCell>{product.price}</TableCell>
+                          <TableCell>{product.price.toLocaleString()} VND</TableCell>
                           <TableCell>{product.quantity}</TableCell>
                           <TableCell>
                             {product.images.map((image, index) => (
@@ -276,10 +276,10 @@ export default function ReadProduct() {
                   <TextField label="Trọng lượng" value={diamond.caratWeight} disabled fullWidth />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextField label="Độ tinh khiết" value={diamond.clarityName} disabled fullWidth />
+                  <TextField label="Độ tinh khiết" value={diamond.clarity} disabled fullWidth />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextField label="Độ cắt" value={diamond.cutName} disabled fullWidth />
+                  <TextField label="Độ cắt" value={diamond.cut} disabled fullWidth />
                 </Grid>
                 <Grid item xs={12} md={3}>
                   <TextField label="Màu sắc" value={diamond.color} disabled fullWidth />
@@ -310,10 +310,10 @@ export default function ReadProduct() {
                   <TextField label="Trọng lượng" value={diamond.caratWeight} disabled fullWidth />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextField label="Độ tinh khiết" value={diamond.clarityName} disabled fullWidth />
+                  <TextField label="Độ tinh khiết" value={diamond.clarity} disabled fullWidth />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <TextField label="Độ cắt" value={diamond.cutName} disabled fullWidth />
+                  <TextField label="Độ cắt" value={diamond.cut} disabled fullWidth />
                 </Grid>
                 <Grid item xs={12} md={3}>
                   <TextField label="Màu sắc" value={diamond.color} disabled fullWidth />

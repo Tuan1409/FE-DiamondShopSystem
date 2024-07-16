@@ -32,6 +32,11 @@ export default function CreateProductType(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!validateForm()) {
+      setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+      setOpenSnackbar(true);
+      return;
+      }
     // Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
     Create(material, price);
   };
@@ -67,7 +72,13 @@ export default function CreateProductType(props) {
     }
     setOpenSnackbar(false);
   };
-
+  function validateForm() {
+    
+    return (
+		material &&
+		price 
+    );
+  }
   return (
     <div style={{
       display: 'flex',
@@ -111,6 +122,7 @@ export default function CreateProductType(props) {
               </div>
               <div className='col'>
                 <TextField
+                required
                   type="number"
                   value={price}
                   onChange={e => setPrice(parseInt(e.target.value))}
@@ -118,6 +130,7 @@ export default function CreateProductType(props) {
                   label="Giá"
                   variant="outlined"
                   className='form-control'
+                  inputProps={{ min: 0 }}
                 />
               </div>
               {

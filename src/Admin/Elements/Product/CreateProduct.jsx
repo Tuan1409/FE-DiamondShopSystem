@@ -88,7 +88,11 @@ export default function CreateProduct(props) {
     
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        if (!validateForm()) {
+          setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+          setOpenSnackbar(true);
+          return;
+          }
         const formData = new FormData();
         formData.append('Name', name); 
         formData.append('CategoryId', categoryId);
@@ -112,7 +116,7 @@ export default function CreateProduct(props) {
         }
         // Handle image uploads
 
-        
+
         productImages.forEach((image, index) => {
             formData.append('ProductImages', image);
         });
@@ -126,7 +130,7 @@ export default function CreateProduct(props) {
             if (response.ok) {
                 setSnackbarMessage('Product created successfully!');
                 setOpenSnackbar(true);                
-                setTimeout(handleClose, 500); 
+                setTimeout(handleClose, 1000); 
                 window.location.reload(); 
             } else {
                 const errorData = await response.json();
@@ -161,7 +165,17 @@ export default function CreateProduct(props) {
     const handleImageChange = (event) => {
         setProductImages([...event.target.files]);
     };
-
+    function validateForm() {
+      return (
+        name &&
+        categoryId &&
+        productTypeId &&
+        weight &&
+        wage &&
+        quantity 
+        
+      );
+    }
     return (
       <>
       
@@ -189,11 +203,13 @@ export default function CreateProduct(props) {
               <form onSubmit={handleSubmit}>
                 <TextField
                   label="Name"
+                  
                   variant="outlined"
                   fullWidth
                   margin="normal"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  required
                 />
    <FormControl fullWidth margin="normal">
   <InputLabel id="category-select-label">Category</InputLabel>
@@ -201,6 +217,7 @@ export default function CreateProduct(props) {
     labelId="category-select-label"
     value={categoryId}
     onChange={(e) => setCategoryId(e.target.value)}
+    required
   >
     {categories.map((category) => (
       <MenuItem key={category.id} value={category.id}>
@@ -215,6 +232,7 @@ export default function CreateProduct(props) {
                     labelId="productType-select-label"
                     value={productTypeId}
                     onChange={(e) => setProductTypeId(e.target.value)}
+                    required
                   >
                     {/* Replace with your actual product type options */}
                     <MenuItem value="1">Gold</MenuItem>
@@ -231,6 +249,8 @@ export default function CreateProduct(props) {
                   margin="normal"
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
+                  required
+                  inputProps={{ min: 0, step: "any" }}
                 />
     
                 <TextField
@@ -241,6 +261,8 @@ export default function CreateProduct(props) {
                   margin="normal"
                   value={wage}
                   onChange={(e) => setWage(e.target.value)}
+                  required
+                  inputProps={{ min: 0, step: "any" }}
                 />
     
                 <TextField
@@ -251,6 +273,8 @@ export default function CreateProduct(props) {
                   margin="normal"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
+                  required
+                  inputProps={{ min: 0 }}
                 />
     
                 {/* Primary Diamonds */}
@@ -263,6 +287,7 @@ export default function CreateProduct(props) {
                   onChange={(event, newValues) => {
                     setPrimaryDiamonds(newValues);
                   }}
+                  required
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -286,6 +311,7 @@ export default function CreateProduct(props) {
                   onChange={(event, newValues) => {
                     setSubDiamonds(newValues);
                   }}
+                  required
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -301,6 +327,7 @@ export default function CreateProduct(props) {
                   type="file"
                   multiple
                   onChange={handleImageChange}
+                  required
                   sx={{ marginTop: '10px' }}
                 />
     
@@ -312,7 +339,7 @@ export default function CreateProduct(props) {
                     startIcon={<SendIcon />}
                     sx={{ mr: 2 }}
                   >
-                    Submit
+                    Create
                   </Button>
     
                   <Button

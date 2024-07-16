@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import { TextField, Button, Box,Snackbar } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
 import Modal from '@mui/material/Modal';
 
 export default function CreateCategory(props) {
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [name, setName] = useState('');
   const [size, setSize] = useState(0);
   const [length, setLength] = useState(0);
@@ -32,6 +34,11 @@ export default function CreateCategory(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
+    if (!validateForm()) {
+      setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+      setOpenSnackbar(true);
+      return;
+      }
     Create(name, size, length);
   };
 
@@ -61,7 +68,13 @@ export default function CreateCategory(props) {
       })
       .catch((error) => console.error('Error:', error));
   }
-
+  function validateForm() {
+    
+    return (
+      size &&
+      length 
+    );
+  }
   return (
     <div style={{
       display: 'flex',
@@ -94,6 +107,7 @@ export default function CreateCategory(props) {
             }}>
               <div className='col'>
                 <TextField
+                required
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -105,6 +119,7 @@ export default function CreateCategory(props) {
               </div>
               <div className='col'>
                 <TextField
+                required
                   type="number"
                   value={size}
                   onChange={e => setSize(parseInt(e.target.value))}
@@ -112,10 +127,12 @@ export default function CreateCategory(props) {
                   label="Size"
                   variant="outlined"
                   className='form-control'
+                  inputProps={{ min: 0 }}
                 />
               </div>
               <div className='col'>
                 <TextField
+                required
                   type="number"
                   value={length}
                   onChange={e => setLength(parseInt(e.target.value))}
@@ -123,6 +140,7 @@ export default function CreateCategory(props) {
                   label="Length"
                   variant="outlined"
                   className='form-control'
+                  inputProps={{ min: 0 }}
                 />
               </div>
               {
@@ -157,7 +175,14 @@ export default function CreateCategory(props) {
             </form>
           </div>
         </Box>
+        
       </Modal>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        message={snackbarMessage}
+        onClose={() => setOpenSnackbar(false)}
+      />
     </div>
   );
 }

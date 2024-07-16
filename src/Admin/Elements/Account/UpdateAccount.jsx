@@ -18,7 +18,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 	const [data, setData] = useState(null)
 	const [open, setOpen] = useState(false)
     const [openSnackbar, setOpenSnackbar] = useState(false); // Trạng thái cho Snackbar
-
+const [errors, setErrors] = useState({});
 	const handleOpen = () => {
 		setOpen(true)
 		// Cập nhật giá trị ban đầu cho các trạng thái
@@ -70,6 +70,43 @@ export default function UpdateAccount({ onClick, ...props }) {
 	  }
 	const handleSubmit = (event) => {
 		event.preventDefault()
+		setErrors({});
+	const newErrors = {};
+
+	if (!nameAccount) {
+		newErrors.nameAccount = 'Name is required';
+	}
+
+	if (!phoneAccount) {
+		newErrors.phoneAccount = 'Phone Number is required';
+	} else if (!/^\d{10,}$/.test(phoneAccount)) {
+		newErrors.phoneAccount = 'Phone Number must be at least 10 digits';
+	}
+
+	if (!addressAccount) {
+		newErrors.addressAccount = 'Address is required';
+	}
+
+	if (!passwordAccount) {
+		newErrors.passwordAccount = 'Password is required';
+	} else if (passwordAccount.length < 8) {
+		newErrors.passwordAccount = 'Password must be at least 8 characters';
+	}
+
+	if (!roleIdAccount) {
+		newErrors.roleIdAccount = 'Role is required';
+	}
+
+	if (!pointAccount && pointAccount !== 0) {
+		newErrors.pointAccount = 'Point is required';
+	} else if (isNaN(pointAccount) || pointAccount < 0) {
+		newErrors.pointAccount = 'Point must be a non-negative number';
+	}
+
+	if (Object.keys(newErrors).length > 0) {
+		setErrors(newErrors);
+		return;
+	}
 		// Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
 		updateAccount(idAccount, emailAccount, nameAccount, genderAccount, phoneAccount, addressAccount, passwordAccount, roleIdAccount, pointAccount)
 	}
@@ -207,128 +244,149 @@ export default function UpdateAccount({ onClick, ...props }) {
 
         
 		<div>
-			<UpdateButton variant="contained" type="button" size="large"
-				onClick={() => { handleOpen(); onClick() }}
-				endIcon={<UpdateIcon></UpdateIcon>}>UPDATE</UpdateButton>
-			<Modal open={open}
-				onClose={handleClose}
-				aria-labelledby="modal-modal-title"
-				aria-describedby="modal-modal-description">
-				<Box sx={{
-					position: 'absolute',
-					top: '50%',
-					left: '50%',
-					transform: 'translate(-50%, -50%)',
-					bgcolor: 'background.paper',
-					border: '1px solid #000',
-					boxShadow: 24,
-					p: 4,
-				}}>
-					<h3 className='titleOfForm'>UPDATE Account</h3>
-					<form onSubmit={handleSubmit}>
-						<div className='row'>
-							<div className='col-12'>
-								<TextField disabled type="text" value={idAccount}
-									id="outlined-basic" label="Id" variant="outlined" className='form-control' />
-							</div>
-						</div> <br />
-						<div className='row'>
-							<div className='col-6'>
-								<TextField type="text" defaultValue={props.email} onChange={handleEmailChange}
-									id="outlined-basic" label="Email" variant="outlined" className='form-control' />
-							</div>
-							<div className='col-6'>
-								<TextField type="text" defaultValue={props.name} onChange={handleNameChange}
-									id="outlined-basic" label="Name" variant="outlined" className='form-control' />
-							</div>
-						</div><br />
-						<div className='row'>
-							<div className='col-4'>
-								<FormControl fullWidth>
-									<InputLabel id="select-label">Gender</InputLabel>
-									<Select 
-									    labelId="select-label"
-										id="demo-simple-select" variant="outlined"
-										label="Gender" 
-										defaultValue={props.gender} // Set the value directly									
-										onChange={handleGenderChange} className='form-control'
-										sx={{
-											padding: '0'
-										}}>
-										  <MenuItem value="Male">Male</MenuItem> 
-										  <MenuItem value="Female">Female</MenuItem> 
-									</Select>
-								</FormControl>
-							</div>
-							<div className='col-4'>
-								<TextField type="text" defaultValue={props.phone} onChange={handlePhoneChange}
-									id="outlined-basic" label="Phone" variant="outlined" className='form-control' />
-							</div>
-							<div className='col-4'>
-								<TextField type="text" defaultValue={props.address} onChange={handleAddressChange}
-									id="outlined-basic" label="Address" variant="outlined" className='form-control' />
-							</div>
-						</div> <br />
-						<div className='row'>
-							<div className='col-4'>
-								<TextField type="password" defaultValue={props.password} onChange={handlePasswordChange}
-									id="outlined-basic" label="Password" variant="outlined" className='form-control' />
-							</div>
-							<div className='col-4'>
-								<FormControl fullWidth>
-									<InputLabel id="select-label">Role</InputLabel>
-									<Select labelId="select-label"
-										id="demo-simple-select" variant="outlined"
-										label="Role" 
-										defaultValue={getRoleValue(props.roleId)} 
-										onChange={handleRoleIdChange} className='form-control'
-										sx={{
-											padding: '0'
-										}}>
-										<MenuItem value={1}>Admin</MenuItem>
-										<MenuItem value={2}>Sale Staff</MenuItem>
-										<MenuItem value={3}>Delivery Staff</MenuItem>
-										<MenuItem value={4}>Customer</MenuItem>
-									</Select>
-								</FormControl>
-							</div>
-							<div className='col-4'>
-								<TextField type="number" 
-								defaultValue={props.point} 
-								onChange={handlePointChange}
-									id="outlined-basic" label="Point" variant="outlined" className='form-control' />
-							</div>
-						</div> <br />
-						<div className='formSubmit' >
-							<Button
-								type="submit"
-								className='submitButton'
-								value="Submit" variant="contained"
-								size="large" endIcon={<SendIcon />}
-								sx={{
-									margin: '5px',
-								}}>
-								Send
-							</Button>
-							<Button type="button"
-								value="Clear" onClick={handleClear}
-								className='submitButton'
-								variant="contained" size="large" color="error"
-								endIcon={<CancelScheduleSendIcon />}
-								sx={{
-									margin: '5px',
-								}}>
-								Clear
-							</Button>
-						</div>
-					</form>
-				</Box>
-			</Modal>
-            <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-    <Alert onClose={handleCloseSnackbar} severity="success">
-        Update account successfully!
-    </Alert>
-</Snackbar>
-		</div>
-	)
+		<UpdateButton variant="contained" type="button" size="large" onClick={handleOpen} endIcon={<UpdateIcon />}>
+		  UPDATE
+		</UpdateButton>
+		<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+		  <Box
+			sx={{
+			  position: 'absolute',
+			  top: '50%',
+			  left: '50%',
+			  transform: 'translate(-50%, -50%)',
+			  bgcolor: 'background.paper',
+			  border: '1px solid #000',
+			  boxShadow: 24,
+			  p: 4,
+			}}
+		  >
+			<h3 className="titleOfForm">UPDATE Account</h3>
+			<form onSubmit={handleSubmit}>
+			  <div className="row">
+				<div className="col-12">
+				  <TextField disabled type="text" value={idAccount} id="outlined-basic" label="Id" variant="outlined" className="form-control" />
+				</div>
+			  </div>{' '}
+			  <br />
+			  <div className="row">
+				<div className="col-6">
+				  <TextField type="text" value={emailAccount} onChange={handleEmailChange} id="outlined-basic" label="Email" variant="outlined" className="form-control" />
+				</div>
+				<div className="col-6">
+				  <TextField type="text" value={nameAccount} onChange={handleNameChange} id="outlined-basic" label="Name" variant="outlined" className="form-control" />
+				  {errors.nameAccount && <span style={{ color: 'red' }}>{errors.nameAccount}</span>}
+				</div>
+			  </div>
+			  <br />
+			  <div className="row">
+				<div className="col-4">
+				  <FormControl fullWidth>
+					<InputLabel id="select-label">Gender</InputLabel>
+					<Select
+					  labelId="select-label"
+					  id="demo-simple-select"
+					  variant="outlined"
+					  label="Gender"
+					  value={genderAccount}
+					  onChange={handleGenderChange}
+					  className="form-control"
+					  sx={{
+						padding: '0',
+					  }}
+					>
+					  <MenuItem value="Male">Male</MenuItem>
+					  <MenuItem value="Female">Female</MenuItem>
+					</Select>
+				  </FormControl>
+				</div>
+				<div className="col-4">
+				  <TextField type="text" value={phoneAccount} onChange={handlePhoneChange} id="outlined-basic" label="Phone" variant="outlined" className="form-control" />
+				  {errors.phoneAccount && <span style={{ color: 'red' }}>{errors.phoneAccount}</span>}
+				</div>
+				<div className="col-4">
+				  <TextField type="text" value={addressAccount} onChange={handleAddressChange} id="outlined-basic" label="Address" variant="outlined" className="form-control" />
+				  {errors.addressAccount && <span style={{ color: 'red' }}>{errors.addressAccount}</span>}
+				</div>
+			  </div>{' '}
+			  <br />
+			  <div className="row">
+				<div className="col-4">
+				  <TextField
+					type="password"
+					value={passwordAccount}
+					onChange={handlePasswordChange}
+					id="outlined-basic"
+					label="Password"
+					variant="outlined"
+					className="form-control"
+				  />
+				  {errors.passwordAccount && <span style={{ color: 'red' }}>{errors.passwordAccount}</span>}
+				</div>
+				<div className="col-4">
+				  <FormControl fullWidth>
+					<InputLabel id="select-label">Role</InputLabel>
+					<Select
+					  labelId="select-label"
+					  id="demo-simple-select"
+					  variant="outlined"
+					  label="Role"
+					  value={roleIdAccount}
+					  onChange={handleRoleIdChange}
+					  className="form-control"
+					  sx={{
+						padding: '0',
+					  }}
+					>
+					  <MenuItem value={1}>Admin</MenuItem>
+					  <MenuItem value={2}>Sale Staff</MenuItem>
+					  <MenuItem value={3}>Delivery Staff</MenuItem>
+					  <MenuItem value={4}>Customer</MenuItem>
+					</Select>
+					{errors.roleIdAccount && <span style={{ color: 'red' }}>{errors.roleIdAccount}</span>}
+				  </FormControl>
+				</div>
+				<div className="col-4">
+				  <TextField
+					type="number"
+					value={pointAccount}
+					onChange={handlePointChange}
+					id="outlined-basic"
+					label="Point"
+					variant="outlined"
+					className="form-control"
+				  />
+				  {errors.pointAccount && <span style={{ color: 'red' }}>{errors.pointAccount}</span>}
+				</div>
+			  </div>{' '}
+			  <br />
+			  <div className="formSubmit">
+				<Button type="submit" className="submitButton" value="Submit" variant="contained" size="large" endIcon={<SendIcon />} sx={{ margin: '5px' }}>
+				  Update
+				</Button>
+				<Button
+				  type="button"
+				  value="Clear"
+				  onClick={handleClear}
+				  className="submitButton"
+				  variant="contained"
+				  size="large"
+				  color="error"
+				  endIcon={<CancelScheduleSendIcon />}
+				  sx={{
+					margin: '5px',
+				  }}
+				>
+				  Clear
+				</Button>
+			  </div>
+			</form>
+		  </Box>
+		</Modal>
+		<Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+		  <Alert onClose={handleCloseSnackbar} severity="success">
+			Update account successfully!
+		  </Alert>
+		</Snackbar>
+	  </div>
+	);
 }

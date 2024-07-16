@@ -16,65 +16,54 @@ import SendIcon from '@mui/icons-material/Send';
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
 
 export default function UpdateDiamond({ open, onClose, diamond, onDiamondUpdated }) {
-  const [name, setName] = useState('');
+  
   const [caratWeight, setCaratWeight] = useState('');
-  const [cutName, setCutName] = useState('');
+  const [cut, setCut] = useState('');
   const [color, setColor] = useState('');
-  const [clarityName, setClarityName] = useState('');
+  const [clarity, setClarity] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [originName, setOriginName] = useState('');
+  const [origin, setOrigin] = useState('');
   const [updateImages, setUpdateImages] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   // States and options for select inputs
   const [clarityId, setClarityId] = useState('');
-  const clarityOptions = [
-    { id: 1, name: 'Option 1' },
-    { id: 2, name: 'Option 2' },
-    // ... add more options
-  ];
-  const [cutId, setCutId] = useState('');
-  const cutOptions = [
-    { id: 1, name: 'Option 1' },
-    { id: 2, name: 'Option 2' },
-    // ... add more options
-  ];
-  const [colorId, setColorId] = useState('');
-  const colorOptions = [
-    { id: 1, name: 'Option 1' },
-    { id: 2, name: 'Option 2' },
-    // ... add more options
-  ];
+  const cutOptions = ['Excellent', 'VeryGood', 'Good', 'Fair', 'Poor'];
+  const colorOptions = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+  const clarityOptions = ['FL', 'IF', 'VVS1', 'VVS2', 'VS1', 'VS2', 'SI1', 'SI2', 'I1', 'I2', 'I3'];
 
   useEffect(() => {
     if (diamond) {
-      setName(diamond.name);
+      
       setCaratWeight(diamond.caratWeight);
-      setCutName(diamond.cutName);
+      setCut(diamond.cut);
       setColor(diamond.color);
-      setClarityName(diamond.clarityName);
+      setClarity(diamond.clarity);
       setPrice(diamond.price);
       setQuantity(diamond.quantity);
-      setOriginName(diamond.originName);
+      setOrigin(diamond.origin);
 
       // Set initial values for select inputs based on diamond data
-      setClarityId(diamond.clarityId); // Assuming diamond has clarityId
-      setCutId(diamond.cutId); // Assuming diamond has cutId
-      setColorId(diamond.colorId); // Assuming diamond has colorId
+      
+    
     }
   }, [diamond]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    if (!validateForm()) {
+		setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+		setOpenSnackbar(true);
+		return;
+	  }
     const formData = new FormData();
-    formData.append('Name', name);
-    formData.append('OriginName', originName);
+    
+    formData.append('Origin', origin);
     formData.append('CaratWeight', caratWeight);
-    formData.append('ClarityName', clarityId); // Send clarityId
-    formData.append('CutName', cutId); // Send cutId
-    formData.append('Color', colorId); // Send colorId
+    formData.append('Clarity', clarityId); // Send clarityId
+    formData.append('Cut', cut); // Send cutId
+    formData.append('Color', color); // Send colorId
     formData.append('Price', price);
     formData.append('Quantity', quantity);
 
@@ -123,7 +112,18 @@ export default function UpdateDiamond({ open, onClose, diamond, onDiamondUpdated
   const handleImageChange = (event) => {
     setUpdateImages([...event.target.files]);
   };
-
+  function validateForm() {
+    return (
+		origin &&
+		caratWeight &&
+		clarity &&
+		cut &&
+		color &&
+      price &&
+      quantity&&
+      updateImages
+    );
+  }
   return (
     <div>
       <Modal open={open} onClose={onClose}>
@@ -141,21 +141,15 @@ export default function UpdateDiamond({ open, onClose, diamond, onDiamondUpdated
         >
           <h3>UPDATE Diamond</h3>
           <form onSubmit={handleSubmit}>
-            <TextField
-              label="Name"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            
             <TextField
               label="Origin Name"
+              disabled
               variant="outlined"
               fullWidth
               margin="normal"
-              value={originName}
-              onChange={(e) => setOriginName(e.target.value)}
+              value={origin}
+              onChange={(e) => setOrigin(e.target.value)}
             />
             <TextField
               label="Carat Weight"
@@ -166,67 +160,76 @@ export default function UpdateDiamond({ open, onClose, diamond, onDiamondUpdated
               onChange={(e) => setCaratWeight(e.target.value)}
             />
            {/* Clarity Select */}
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="clarity-select-label">Clarity</InputLabel>
-              <Select
-                labelId="clarity-select-label"
-                value={clarityId}
-                onChange={(e) => setClarityId(e.target.value)}
-              >
-                {clarityOptions.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
+           <FormControl fullWidth margin="normal">
+                <InputLabel id="clarity-label">Clarity</InputLabel>
+                <Select
+                  labelId="clarity-label"
+                  id="clarity"
+                  value={clarity}
+                  onChange={(e) => setClarity(e.target.value)}
+				  required
+                >
+                  {clarityOptions.map((clarity) => (
+                    <MenuItem key={clarity} value={clarity}>
+                      {clarity}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             {/* Cut Select */}
             <FormControl fullWidth margin="normal">
-              <InputLabel id="cut-select-label">Cut</InputLabel>
-              <Select
-                labelId="cut-select-label"
-                value={cutId}
-                onChange={(e) => setCutId(e.target.value)}
-              >
-                {cutOptions.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                <InputLabel id="cut-label">Cut</InputLabel>
+                <Select
+                  labelId="cut-label"
+                  id="cut"
+                  value={cut}
+                  onChange={(e) => setCut(e.target.value)}
+				  required
+                >
+                  {cutOptions.map((cut) => (
+                    <MenuItem key={cut} value={cut}>
+                      {cut}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
             {/* Color Select */}
             <FormControl fullWidth margin="normal">
-              <InputLabel id="color-select-label">Color</InputLabel>
-              <Select
-                labelId="color-select-label"
-                value={colorId}
-                onChange={(e) => setColorId(e.target.value)}
-              >
-                {colorOptions.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                <InputLabel id="color-label">Color</InputLabel>
+                <Select
+                  labelId="color-label"
+                  id="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+				  required
+                >
+                  {colorOptions.map((c) => (
+                    <MenuItem key={c} value={c}>
+                      {c}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             <TextField
               label="Price"
               variant="outlined"
               fullWidth
+              type="number"
               margin="normal"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
+              inputProps={{ min: 0 }}
             />
             <TextField
               label="Quantity"
               variant="outlined"
               fullWidth
+              type="number"
               margin="normal"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
+              inputProps={{ min: 0 }}
             />
             {/* Image Upload */}
             <InputLabel htmlFor="update-images">Update Images</InputLabel>
@@ -236,6 +239,7 @@ export default function UpdateDiamond({ open, onClose, diamond, onDiamondUpdated
               type="file"
               multiple
               onChange={handleImageChange}
+              required
             />
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
               <Button

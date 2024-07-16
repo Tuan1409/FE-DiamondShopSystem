@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
-
+import { ToastContainer, toast } from 'react-toastify'; 
 export default function CreatePromotion(props) {
     
     const [name, setName] = useState('');
@@ -38,7 +38,19 @@ export default function CreatePromotion(props) {
     
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        if (discountPercentage < 0 || discountPercentage >= 100) { 
+          toast.error('Discount must be between 0 and 100!', { 
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+          });
+          return; // Don't submit if invalid
+      }
         try {
             console.log('Before Fetch: point=', point, 'discountPercent=', discountPercentage); // Logging before fetch
             const token = localStorage.getItem("token");
@@ -140,7 +152,7 @@ export default function CreatePromotion(props) {
                     startIcon={<SendIcon />}
                     sx={{ mr: 2 }}
                   >
-                    Submit
+                    Create
                   </Button>
     
                   <Button
@@ -164,6 +176,7 @@ export default function CreatePromotion(props) {
             message={snackbarMessage}
           />
         </div>
+        <ToastContainer />
       </>
     );
   }
