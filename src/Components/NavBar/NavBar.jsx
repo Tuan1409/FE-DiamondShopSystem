@@ -10,7 +10,10 @@ export default function Navbar() {
         localStorage.removeItem('token'); // Xóa token khi logout
         navigate('/login'); // Chuyển hướng về trang login
     };
-
+    const handleProfile = () => {
+        navigate('profile'); 
+      };
+    
     return (
         <>
             <nav className='navbar-expand-lg bg-body-tertiary '>
@@ -29,7 +32,16 @@ export default function Navbar() {
                     <CustomLink to="/vieworder">Order</CustomLink>
                     <CustomLink to="/cart"><img src="src\assets\img\shopping-cart (1).png" alt="" className='cartLogo' /></CustomLink>
                     {isLoggedIn ? (
-                        <CustomLink to="/" onClick={handleLogout}>Logout</CustomLink>
+                         <div>
+                         <img 
+                src="src\assets\img\avt.jpg" 
+                alt="Avatar" 
+                className="avatar-icon" 
+                onClick={handleProfile} 
+              /> 
+                         <CustomLink to="/" onClick={handleLogout}>Logout</CustomLink> 
+                       </div>
+                       
                     ) : (
                         <CustomLink to="/login">Login</CustomLink>
                     )}

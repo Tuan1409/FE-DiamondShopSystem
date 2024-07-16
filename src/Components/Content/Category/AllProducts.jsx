@@ -93,43 +93,40 @@ export default function AllProducts() {
   };
 
   return (
-    <div className='container-fluid categoryContainer'>
+    <div className="container-fluid categoryContainer">
       <ToastContainer />
-      <div>
-        <h1 className='categoryTitle'>ALL PRODUCTS</h1>
+      <div className="categoryTitle">
+        <h1>ALL PRODUCTS</h1>
       </div>
-      <div className='row productContainer'>
-        {products.map(product => (
-          <div key={product.id} className='col-md-3 col-sm-6 mb-4'>
-            <div className='card border-0'>
-              <div className='d-flex flex-column'>
-                <div className='ratio ratio-1x1'>
-                 
-                  <Link to={`/product/${product.id}`} className='text-decoration-none'>
-                    <img src={product.images[0]} alt={product.name} className='imgListProduct' />
-                  </Link>
+      <div className="row productContainer">
+        {products.map((product) => (
+          <div key={product.id} className="col-md-3 col-sm-6 mb-4">
+            <div className="card border-0 product-card">
+              <Link to={`/product/${product.id}`} className="text-decoration-none">
+                <div className="ratio ratio-1x1">
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="imgListProduct"
+                  />
                 </div>
-                <div className='card-body p-0 pt-2'>
-                  <div className='d-flex' id='textContainer'>
-                    <h3 style={{ wordBreak: 'break-all' }}>{product.name}</h3>
-                  </div>
-                  <div className='d-flex justify-content-between align-items-center mt-2'>
-                    <div className='input-group input-group-sm'>
-                      <input
-                        type='number'
-                        className='form-control'
-                        id={`quantity-${product.id}`}
-                        defaultValue='1'
-                        min='1'
-                        max={product.quantity}
-                      />
-                      <span className="ml-2">Còn lại: {product.quantity}</span>
-                    </div>
-                    <button className='btn btn-primary btn-sm' onClick={() => handleAddToCart(product.id)}>
-                      Thêm vào giỏ hàng
-                    </button>
-                  </div>
-                </div>
+              </Link>
+              <div className="card-body p-0 pt-2">
+                <h3 className="card-title" style={{ wordBreak: 'break-all' }}>
+                  {product.name}
+                </h3>
+              </div>
+              <div className="card-body p-0 pt-2">
+                <h5 className="card-text" style={{ wordBreak: 'break-all' }}>
+                  Chất liệu: {product.productType.material}
+                </h5>
+              </div>
+              <div className="card-body p-0 pt-2">
+                <p className="product-size">
+                  {product.category.size === 0
+                    ? `Chiều dài: ${product.category.length}`
+                    : `Size: ${product.category.size}`}
+                </p>
               </div>
             </div>
           </div>
@@ -137,4 +134,4 @@ export default function AllProducts() {
       </div>
     </div>
   );
-}
+};

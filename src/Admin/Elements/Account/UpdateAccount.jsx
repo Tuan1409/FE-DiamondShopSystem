@@ -29,7 +29,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 		setPhoneAccount(props.phone || '')
 		setAddressAccount(props.address || '')
 		setPasswordAccount(props.password || '') // Cập nhật password
-		setRoleIdAccount(props.roleId || null) // Cập nhật roleId
+		setRoleIdAccount(props.roleId || '') // Cập nhật roleId
 		setPointAccount(props.point || '') // Cập nhật point
 	}
 
@@ -54,7 +54,18 @@ export default function UpdateAccount({ onClick, ...props }) {
 			backgroundColor: amber[700],
 		},
 	}))
-
+	function getRoleName(roleId) {
+		switch (roleId) {
+			case 1:
+				return 'Admin'
+			case 2:
+				return 'Sale staff'
+			case 3:
+				return 'Delivery staff'
+			case 4:
+				return 'Customer'
+		}
+	}
 	const handleSubmit = (event) => {
 		event.preventDefault()
 		// Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
@@ -87,7 +98,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 		formData.append('Gender', Gender); // Gửi "Male" hoặc "Female"
 		formData.append('RoleId', RoleId);
 		formData.append('Point', Point);
-	
+	console.log(props.orderId)
 		try {
 		  const response = await fetch(url, {
 			method: 'PUT',
@@ -102,7 +113,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 			const errorData = await response.json(); // Lấy thông tin lỗi từ server
 			throw new Error(`HTTP error! status: ${response.status}`);
 		  }
-	console.log(formData);
+	
 		  // Xử lý kết quả (nếu cần)
 		  // Ví dụ: const data = await response.json();
 	
@@ -134,8 +145,8 @@ export default function UpdateAccount({ onClick, ...props }) {
 	}, [props.name])
 
 	useEffect(() => {
-		setGenderAccount(props.gender === 'Male' ? true : false)
-	}, [props.gender])
+		setGenderAccount(props.gender); // Set directly
+	}, [props.gender]);
 
 	useEffect(() => {
 		setPhoneAccount(props.phone)
@@ -150,12 +161,12 @@ export default function UpdateAccount({ onClick, ...props }) {
 	}, [props.password])
 
 	useEffect(() => {
-		setRoleIdAccount(props.roleId) // Cập nhật roleId
-	}, [props.roleId])
+		setRoleIdAccount(parseInt(props.roleId, 10)); 
+	}, [props.roleId]);
 
 	useEffect(() => {
-		setPointAccount(props.point) // Cập nhật point
-	}, [props.point])
+		setPointAccount(parseInt(props.point, 10)); // Parse as integer
+	}, [props.point]);
 
 	// Các hàm xử lý thay đổi
 	const handleEmailChange = (e) => {
@@ -233,9 +244,11 @@ export default function UpdateAccount({ onClick, ...props }) {
 							<div className='col-4'>
 								<FormControl fullWidth>
 									<InputLabel id="select-label">Gender</InputLabel>
-									<Select labelId="select-label"
+									<Select 
+									    labelId="select-label"
 										id="demo-simple-select" variant="outlined"
-										label="Gender" defaultValue={props.gender === 'Male' ? true : false}
+										label="Gender" 
+										defaultValue={props.gender} // Set the value directly									
 										onChange={handleGenderChange} className='form-control'
 										sx={{
 											padding: '0'
@@ -264,7 +277,8 @@ export default function UpdateAccount({ onClick, ...props }) {
 									<InputLabel id="select-label">Role</InputLabel>
 									<Select labelId="select-label"
 										id="demo-simple-select" variant="outlined"
-										label="Role" defaultValue={props.roleId}
+										label="Role" 
+										defaultValue={getRoleName(props.roleId)} // Set the value directly
 										onChange={handleRoleIdChange} className='form-control'
 										sx={{
 											padding: '0'
@@ -277,7 +291,9 @@ export default function UpdateAccount({ onClick, ...props }) {
 								</FormControl>
 							</div>
 							<div className='col-4'>
-								<TextField type="number" defaultValue={props.point} onChange={handlePointChange}
+								<TextField type="number" 
+								defaultValue={props.point} 
+								onChange={handlePointChange}
 									id="outlined-basic" label="Point" variant="outlined" className='form-control' />
 							</div>
 						</div> <br />

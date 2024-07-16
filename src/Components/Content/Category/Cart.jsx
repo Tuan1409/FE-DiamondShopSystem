@@ -121,12 +121,7 @@ export default function Cart() {
       });
       return;
     }
-     if (!/^\d{10}$/.test(phoneNumber)) {
-      toast.error("Số điện thoại phải có 10 chữ số!", {
-        // ... (toast options)
-      });
-      return;
-    }
+     
     try {
       const params = new URLSearchParams({
         address: address,

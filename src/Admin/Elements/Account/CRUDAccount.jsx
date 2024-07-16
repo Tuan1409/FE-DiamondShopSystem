@@ -24,6 +24,7 @@ export default function ReadAccount() {
 		{ id: 'PhoneNumber', label: 'Phone number', align: 'left', },
 		{ id: 'Address', label: 'Address', align: 'left', },
 		{ id: 'Role', label: 'Role', align: 'left', },
+		{ id: 'Point', label: 'Point', align: 'left', },
 	];
 
 
@@ -84,6 +85,7 @@ export default function ReadAccount() {
 					gender: data.gender,
 					address: data.address,
 					phoneNumber: data.phoneNumber,
+					point: data.point,
 					roleId: getRoleName(data.roleId)
 				  }));
 				  setData(rows);
@@ -170,6 +172,9 @@ export default function ReadAccount() {
 											{data.roleId}
 										</TableCell>
 										<TableCell>
+											{data.point}
+										</TableCell>
+										<TableCell>
 											<Button variant="outlined" color="error"
 												size="large" endIcon={<DeleteIcon />}
 												sx={{
@@ -214,6 +219,8 @@ export default function ReadAccount() {
 												gender={data.gender}
 												phone={data.phoneNumber}
 												address={data.address}
+												roleId={data.roleId}
+												point={data.point}
 												onClick={() => handleUpdate(data.id)}
 												onAccountUpdated={() => setTriggerRead(prev => !prev)}></UpdateAccount>
 										</TableCell>

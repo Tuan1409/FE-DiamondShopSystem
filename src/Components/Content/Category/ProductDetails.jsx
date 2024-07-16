@@ -112,7 +112,16 @@ export default function ProductDetails() {
     
     } catch (error) {
       console.error('Lỗi:', error);
-      alert('Có lỗi xảy ra khi thêm vào giỏ hàng: ' + error.message);
+      toast.error('Vui lòng đăng nhập để mua hàng!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });;
     }
   };
   return (
