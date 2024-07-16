@@ -54,18 +54,20 @@ export default function UpdateAccount({ onClick, ...props }) {
 			backgroundColor: amber[700],
 		},
 	}))
-	function getRoleName(roleId) {
-		switch (roleId) {
-			case 1:
-				return 'Admin'
-			case 2:
-				return 'Sale staff'
-			case 3:
-				return 'Delivery staff'
-			case 4:
-				return 'Customer'
+	function getRoleValue(roleName) {
+		switch (roleName) {
+		  case 'Admin':
+			return 1;
+		  case 'Sale Staff':
+			return 2;
+		  case 'Delivery Staff':
+			return 3;
+		  case 'Customer':
+			return 4;
+		  default:
+			return null; // Or handle the case of an unknown role
 		}
-	}
+	  }
 	const handleSubmit = (event) => {
 		event.preventDefault()
 		// Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
@@ -84,7 +86,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 		setPointAccount('') // Reset point
 		setData(null)
 	}
-
+	console.log(props.orderId)
 	async function updateAccount(Id, Email, Name, Gender, Phone, Address, Password, RoleId, Point) {
 		const url = `https://localhost:7122/api/Account/UpdateAccount/${Id}`;
 	     const token = localStorage.getItem("token");
@@ -98,7 +100,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 		formData.append('Gender', Gender); // Gửi "Male" hoặc "Female"
 		formData.append('RoleId', RoleId);
 		formData.append('Point', Point);
-	console.log(props.orderId)
+	
 		try {
 		  const response = await fetch(url, {
 			method: 'PUT',
@@ -161,7 +163,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 	}, [props.password])
 
 	useEffect(() => {
-		setRoleIdAccount(parseInt(props.roleId, 10)); 
+		setRoleIdAccount(props.roleId); 
 	}, [props.roleId]);
 
 	useEffect(() => {
@@ -194,7 +196,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 	}
 
 	const handleRoleIdChange = (e) => {
-		setRoleIdAccount(parseInt(e.target.value, 10)) // Xử lý thay đổi roleId
+		setRoleIdAccount(e.target.value) // Xử lý thay đổi roleId
 	}
 
 	const handlePointChange = (e) => {
@@ -278,7 +280,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 									<Select labelId="select-label"
 										id="demo-simple-select" variant="outlined"
 										label="Role" 
-										defaultValue={getRoleName(props.roleId)} // Set the value directly
+										defaultValue={getRoleValue(props.roleId)} 
 										onChange={handleRoleIdChange} className='form-control'
 										sx={{
 											padding: '0'

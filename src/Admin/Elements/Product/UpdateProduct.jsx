@@ -20,12 +20,13 @@ import UpdateIcon from '@mui/icons-material/Update';
 
 export default function UpdateProduct({ open, onClose, product, onProductUpdated }) {
   const [name, setName] = useState('');
-  const [size, setSize] = useState('');
+  const [weight, setWeight] = useState('');
   const [price, setPrice] = useState(0);
   const [wage, setWage] = useState(0);
   const [productTypeId, setProductTypeId] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
   const [quantity, setQuantity] = useState(0);
+  const [size, setSize] = useState(0);
   
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -35,6 +36,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
       setName(product.name);
       setSize(product.size);
       setPrice(product.price);
+      setWeight(product.weight);
       setWage(product.wage);
       setProductTypeId(product.productTypeId);
       setCategoryId(product.categoryId);
@@ -47,7 +49,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
     updateProduct(
       product.id, // Sử dụng product.id
       name,
-      
+      weight,
       price,
       wage,
       productTypeId,
@@ -85,7 +87,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
 
         fetchCategories(); 
     }, []);
-  async function updateProduct(Id, Name, Size, Price, Wage, ProductTypeId, CategoryId, Quantity) {
+  async function updateProduct(Id, Name, Weight, Price, Wage, ProductTypeId, CategoryId, Quantity) {
     const url = `https://localhost:7122/api/Product/UpdateProduct/${Id}`;
 
     try {
@@ -96,7 +98,7 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
         },
         body: JSON.stringify({
           Name,
-          
+          Weight,
           Price,
           Wage,
           ProductTypeId,
@@ -174,6 +176,21 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
                 className="form-control"
                 value={price}
                 onChange={(e) => setPrice(parseFloat(e.target.value))}
+                fullWidth
+                type="number" // Đặt type="number" cho input số
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            
+            <div className="col-6">
+              <TextField
+                label="Weight"
+                variant="outlined"
+                className="form-control"
+                value={weight}
+                onChange={(e) => setWeight(parseFloat(e.target.value))}
                 fullWidth
                 type="number" // Đặt type="number" cho input số
               />

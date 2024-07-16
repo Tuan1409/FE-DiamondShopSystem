@@ -64,10 +64,17 @@ export default function ReadPromotion() {
   }, [openUpdateModal]);
 
   const handleDeletePromotion = async (promotionId) => {
+    const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`https://localhost:7122/api/Promotion/DeletePromotion/${promotionId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `https://localhost:7122/api/Promotion/DeletePromotion/${promotionId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`, 
+          },
+        }
+      );
 
       if (response.ok) {
         // Xóa promotion thành công, cập nhật lại danh sách promotion
@@ -114,7 +121,7 @@ export default function ReadPromotion() {
                     <TableRow>
                       <TableCell>Point</TableCell>
                       <TableCell>DiscountPercent</TableCell>
-                      <TableCell>StartDate</TableCell>
+                      <TableCell>Status</TableCell>
                       
                       <TableCell>chức năng</TableCell> 
                     </TableRow>
@@ -143,9 +150,7 @@ export default function ReadPromotion() {
                               Delete
                             </Button>
                             {/* Update button */}
-                            <Button variant="outlined" color="warning" size="large" onClick={() => handleUpdate(promotion)}>
-                              Update
-                            </Button>
+                           
                             {/* UpdatePromotion modal */}
                             <UpdatePromotion
                               open={!!selectedPromotion && selectedPromotion.id === promotion.id}

@@ -86,7 +86,8 @@ export default function ReadAccount() {
 					address: data.address,
 					phoneNumber: data.phoneNumber,
 					point: data.point,
-					roleId: getRoleName(data.roleId)
+					roleId: getRoleName(data.roleId),
+					roleId2 :data.roleId
 				  }));
 				  setData(rows);
 			 
