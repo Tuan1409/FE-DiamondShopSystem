@@ -5,41 +5,41 @@
     background-color: #000;
     padding: 10px 10vw;
     color: white;
-}
-
-#navBarContainer div a {
+  }
+  
+  #navBarContainer a { /* Loại bỏ thẻ div */
     color: white;
     text-decoration: none;
-    font-size: calc(1vw + 0.5vh);
-}
-
-#navBarContainer div a:hover,
-#navBarContainer div a.active {
-    color: #CEAA62;
-}
-
-.cartLogo {
-    width: calc(2vw + 0.5vh);
-}
-
-nav {
-    padding: 0;
-}
-.avatar-icon {
-    width: calc(2vw + 0.5vh);
+    font-size: 1rem; /* Sử dụng đơn vị rem */
+    /* Hoặc: font-size: 1.2em; */ 
   }
-
-/* @media screen and (max-width: 1150px) {
+  
+  #navBarContainer a:hover,
+  #navBarContainer a.active {
+    color: #CEAA62;
+  }
+  
+  .cartLogo, .avatar-icon { 
+    width: 2.5rem; /* Sử dụng đơn vị rem cho kích thước icon */
+    /* Hoặc: width: 2em; */ 
+  }
+  
+  nav {
+    padding: 0;
+  }
+  
+  /* Media query cho màn hình nhỏ hơn 1150px */
+  @media screen and (max-width: 1150px) {
     #navBarContainer {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        background-color: hsla(0, 0%, 6%, 0.2);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        width: 80%;
-        height: 100%;
-        padding: 6rem 3rem 0;
-        transition: right 0.4s;
+      position: fixed;
+      top: 0;
+      right: -100%; /* Kiểm tra lại giá trị này */
+      background-color: hsla(0, 0%, 6%, 0.2);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      width: 80%;
+      height: 100%;
+      padding: 6rem 3rem 0;
+      transition: right 0.4s;
     }
-} */
+  } 

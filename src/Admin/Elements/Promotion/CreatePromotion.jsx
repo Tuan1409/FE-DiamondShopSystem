@@ -58,7 +58,7 @@ export default function CreatePromotion(props) {
             // Tạo FormData object
             const formData = new FormData();
             formData.append('Point', point); // Thêm dữ liệu Point
-            formData.append('DiscountPercentage', discountPercentage); // Thêm dữ liệu DiscountPercentage
+            formData.append('DiscountPercentage', discountPercentage/100); // Thêm dữ liệu DiscountPercentage
 
             const response = await fetch('https://localhost:7122/api/Promotion/CreatePromotion', { 
                 method: 'POST',

@@ -14,7 +14,10 @@ export function validateUser(userData) {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          return response.json().then(errorJson => { // Đổi tên biến thành errorJson
+            // Giả sử API trả về lỗi trong errorJson.errorMessages
+            throw new Error(errorJson.errorMessages); 
+          }); 
         }
         return response.json();
       })
@@ -23,6 +26,7 @@ export function validateUser(userData) {
         resolve();
       })
       .catch((error) => {
+        console.error("Lỗi đăng nhập:", error.message); 
         reject(error);
       });
   });

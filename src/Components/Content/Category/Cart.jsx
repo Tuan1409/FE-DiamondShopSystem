@@ -51,9 +51,14 @@ export default function Cart() {
   }, [token]);
 
   const calculateTotalPrice = () => {
-    return cart ? cart.items.reduce((total, item) => total + item.quantity * item.price, 0) : 0;
+    // Tính tổng tiền các sản phẩm (không nhân discount)
+    let subtotal = cart ? cart.items.reduce((total, item) => {
+      return total + item.quantity * item.price; 
+    }, 0) : 0;
+  
+    // Nhân tổng tiền với discountPercentage của giỏ hàng
+    return subtotal * (cart.discountPercentage || 1); 
   };
-
   const handleDeleteItem = async (productId) => {
     if (!token) {
       console.error("Chưa đăng nhập!");
@@ -70,7 +75,7 @@ export default function Cart() {
         items: [
           {
             productId: productId,
-            quantity: productToDelete.quantity 
+            quantity: 1
           }
         ]
       };
@@ -83,7 +88,7 @@ export default function Cart() {
         },
         body: JSON.stringify(requestBody) 
       });
-
+      window.location.reload()
       if (!res.ok) {
         throw new Error(`Lỗi khi xóa sản phẩm: ${res.status}`);
       }
@@ -185,6 +190,7 @@ export default function Cart() {
                 <th>Tên sản phẩm</th>
                 <th>Số lượng</th>
                 <th>Đơn giá</th>
+                
                 <th>Thành tiền</th>
                 <th>Hành động</th>
               </tr>
@@ -196,6 +202,7 @@ export default function Cart() {
                   <td>{item.productName || `Sản phẩm #${item.productId}`}</td>
                   <td>{item.quantity}</td>
                   <td>{item.price.toLocaleString()} VND</td>
+                 
                   <td>{(item.quantity * item.price).toLocaleString()} VND</td>
                   <td>
                     <button
@@ -210,7 +217,14 @@ export default function Cart() {
             </tbody>
           </table>
           <div className="text-right">
+          <div className="text-right">
+            {/* Hiển thị discountPercentage cho toàn bộ giỏ hàng */}
+            {cart.discountPercentage > 0 && (
+              <p>Giảm giá: {cart.discountPercentage.toFixed(1)}%</p>
+            )}
             <h3>Tổng tiền: {calculateTotalPrice().toLocaleString()} VND</h3>
+            {/* ... (Các phần tử khác) ... */}
+          </div>
             {/* Nút Thanh toán */}
             <div className="form-group">
               <label htmlFor="address">Địa chỉ:</label>

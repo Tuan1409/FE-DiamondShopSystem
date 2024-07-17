@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import "./Login.css";
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,6 +40,7 @@ const Profile = () => {
   }
 
   return (
+    <div className="pageLoginContainer profile-container"> 
     <div className="profile-container">
       <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>Thông tin cá nhân</h2>
 
@@ -52,6 +54,7 @@ const Profile = () => {
         <p style={{ fontSize: '16px', marginBottom: '10px' }}>Số điện thoại: {user.phoneNumber}</p>
         <p style={{ fontSize: '16px', marginBottom: '10px' }}>Điểm tích lũy: {user.point}</p>
       </div>
+    </div>
     </div>
   );
 };

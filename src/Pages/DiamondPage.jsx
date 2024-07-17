@@ -18,26 +18,6 @@ const DiamondPage = () => {
 	  <div className="diamond-shop-container">
 		<h1>The Diamonds</h1>
 
-		{/* <div className='diamond-grid'>
-                <ul className='slider-container productContainer' id='productContainerId'>
-                    {CategoryData.map((CategoryData) => (
-                        <li key={CategoryData.id}>
-                            <a href='' className='linkCategoryContainer'>
-                                <div className='card border-0'>
-                                    <div className='ratio ratio-1x1'>
-                                        <img src={CategoryData.img} alt='' className='imgListProduct' />
-                                    </div>
-                                    <div className='card-body p-0 pt-2'>
-                                        <div className='d-flex' id='textContainer'>
-                                            <h3 className='flex-grow-1'>{CategoryData.name}</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div> */}
 
 		<div className="diamond-grid">
 		  {diamonds.map((diamond, index) => (

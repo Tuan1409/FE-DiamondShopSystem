@@ -135,7 +135,7 @@ export default function CreateProduct(props) {
             } else {
                 const errorData = await response.json();
                 console.error("API Error:", errorData);
-                throw new Error(errorData.ErrorMessage || 'Error creating product');
+                throw new Error(errorData.message || 'Error creating product');
             }
         } catch (error) {
             console.error('Fetch error:', error);

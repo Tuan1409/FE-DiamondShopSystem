@@ -3,14 +3,45 @@ import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Nhập CSS của react-toastify
 import './styles.css'; // Nhập file CSS 
-
+import { TextField, Button, Box, Snackbar, Alert } from '@mui/material';
 import './Category.css';
 export default function ProductDetails() {
-  
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Add state for Snackbar
   const { productId } = useParams();
   const [products, setProducts] = useState(null);
   const [product, setProduct] = useState(null);
+  const [cartQuantity, setCartQuantity] = useState(0); // State lưu trữ số lượng sản phẩm đã có trong giỏ hàng
   const [token, setToken] = useState(localStorage.getItem('token') || null);
+  useEffect(() => {
+    const fetchCartQuantity = async () => {
+      if (!token) return; 
+
+      try {
+        const res = await fetch(`https://localhost:7122/api/Cart/view-cart`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Lỗi khi lấy dữ liệu giỏ hàng: ${res.status}`);
+        }
+
+        const data = await res.json();
+        const cartItem = data.data.items.find(item => item.productId === parseInt(productId)); 
+        setCartQuantity(cartItem ? cartItem.quantity : 0); 
+
+      } catch (error) {
+        console.error('Lỗi:', error);
+        toast.error('Có lỗi xảy ra khi lấy dữ liệu giỏ hàng!', {
+          // ...
+        });
+      }
+    };
+
+    fetchCartQuantity();
+  }, [token, productId]); // Chạy lại effect khi token hoặc productId thay đổi
+
   useEffect(() => {
     fetch('https://localhost:7122/api/Product/GetProducts')
       .then(res => res.json())
@@ -40,11 +71,16 @@ export default function ProductDetails() {
     return <div>Đang tải...</div>;
   }
   const handleAddToCart = async (productId) => {
+    if (!validateForm()) {
+      setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+      setOpenSnackbar(true);
+      return;
+      }
     const quantityInput = document.getElementById(`quantity-${productId}`);
     const quantity = parseInt(quantityInput.value) || 1;
   console.log(product.quantity);
     // Sử dụng product state để tìm sản phẩm
-    if (!product || quantity > product.quantity) {
+    if (!product || quantity+cartQuantity > product.quantity ) {
       toast.error('Số lượng không đủ : '  ,{
         position: "top-right",
         autoClose: 3000,
@@ -57,7 +93,20 @@ export default function ProductDetails() {
       });
       return;
     }
-  
+    if (quantity <= 0) {
+      toast.error('Số lượng phải lớn hơn 0!', { 
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
     if (!token) {
       toast.error('Vui lòng đăng nhập để mua hàng!', {
         position: "top-right",
@@ -124,6 +173,24 @@ export default function ProductDetails() {
       });;
     }
   };
+  function validateForm() {
+    
+    return (
+		 product.quantity
+		 
+    );
+  }
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+  
+  const handleQuantityChange = (event) => {
+    const value = parseInt(event.target.value) || 1; // Ensure value is at least 1
+    setQuantity(value);
+  };
   return (
     <div className="product-details">
       <div className="product-image">
@@ -148,8 +215,12 @@ export default function ProductDetails() {
               className='form-control'
               id={`quantity-${product.id}`}
               defaultValue='1'
+            
+              onChange={handleQuantityChange} // Add onChange handler
               min='1'
               max={product.quantity}
+              inputProps={{ min: 0 }}
+              required
             />
             <span className="ml-2">Còn lại: {product.quantity}</span>
           </div>
@@ -268,6 +339,11 @@ export default function ProductDetails() {
         </div>
       </div>
       <ToastContainer /> {/* Toast Container vẫn ở cuối */}
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          Tạo loại sản phẩm thành công!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

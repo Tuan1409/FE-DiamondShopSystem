@@ -49,21 +49,34 @@ export default function CreateProductType(props) {
 
   function Create(Material, Price) {
     const url = 'https://localhost:7122/api/ProductType/CreateProductType';
-    const formData = new FormData(); // Tạo FormData
+    const formData = new FormData();
     formData.append('material', Material);
     formData.append('price', Price);
     formData.append('isDeleted', false);
 
     fetch(url, {
       method: 'POST',
-      body: formData // Sử dụng FormData
+      body: formData 
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) { // Kiểm tra response status
+          // Xử lý trường hợp response không thành công (status code không phải 2xx)
+          return response.json().then(errorData => {
+            // Lấy thông tin lỗi từ response body
+            throw new Error(errorData.message || 'Lỗi khi tạo Product Type'); 
+          });
+        }
+        return response.json(); // Nếu response ok, parse JSON như bình thường
+      })
       .then(responseData => {
         setData(responseData);
         props.onProductTypeCreated();
       })
-      .catch((error) => console.error('Error:', error));
+      .catch((error) => {
+        console.error('Error:', error);
+        // Hiển thị thông báo lỗi cho người dùng
+        alert(error.message); 
+      });
   }
 
   const handleCloseSnackbar = (event, reason) => {
