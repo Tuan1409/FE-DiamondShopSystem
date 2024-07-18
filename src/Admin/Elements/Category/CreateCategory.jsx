@@ -20,7 +20,6 @@ export default function CreateCategory(props) {
     setLength(0);
     setData(null);
   };
-
   useEffect(() => {
     // This effect runs when `data` changes
     if (data && data.status !== 400) {
@@ -30,7 +29,6 @@ export default function CreateCategory(props) {
       setLength(0);
     }
   }, [data]);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     // Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
@@ -48,40 +46,26 @@ export default function CreateCategory(props) {
     setLength(0);
     setData(null);
   };
-
-  function Create(Material, Price) {
-    const url = 'https://localhost:7122/api/ProductType/CreateProductType';
-    const formData = new FormData();
-    formData.append('material', Material);
-    formData.append('price', Price);
+  function Create(Name, Size, Length) {
+    const url = 'https://localhost:7122/api/Category/CreateCategory';
+    const formData = new FormData(); // Tạo FormData
+    formData.append('name', Name);
+    formData.append('size', Size);
+    formData.append('length', Length);
     formData.append('isDeleted', false);
-
     fetch(url, {
       method: 'POST',
-      body: formData 
+      body: formData // Sử dụng FormData
     })
-      .then(response => {
-        if (!response.ok) { // Kiểm tra response status
-          // Xử lý trường hợp response không thành công (status code không phải 2xx)
-          return response.json().then(errorData => {
-            // Lấy thông tin lỗi từ response body
-            throw new Error(errorData.message || 'Lỗi khi tạo Product Type'); 
-          });
-        }
-        return response.json(); // Nếu response ok, parse JSON như bình thường
-      })
+      .then(response => response.json())
       .then(responseData => {
         setData(responseData);
-        props.onProductTypeCreated();
+        props.onCategoryCreated();
       })
-      .catch((error) => {
-        console.error('Error:', error);
-        // Hiển thị thông báo lỗi cho người dùng
-        alert(error.message); 
-      });
+      .catch((error) => console.error('Error:', error));
   }
   function validateForm() {
-    
+
     return (
       size &&
       length 
@@ -187,7 +171,7 @@ export default function CreateCategory(props) {
             </form>
           </div>
         </Box>
-        
+
       </Modal>
       <Snackbar
         open={openSnackbar}
