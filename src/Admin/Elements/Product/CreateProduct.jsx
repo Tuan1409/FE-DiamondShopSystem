@@ -124,6 +124,9 @@ export default function CreateProduct(props) {
         try {
             const response = await fetch('https://localhost:7122/api/Product/CreateProduct', { 
                 method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
                 body: formData 
             });
 

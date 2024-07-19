@@ -102,6 +102,8 @@ export default function UpdateProduct({ open, onClose, product, onProductUpdated
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+
         },
         body: JSON.stringify({
           Name,

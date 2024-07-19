@@ -78,7 +78,7 @@ export default function CreatePromotion(props) {
             } else {
                 const errorData = await response.json();
                 console.error("API Error:", errorData);
-                throw new Error(errorData.ErrorMessage || 'Error creating promotion');
+                throw new Error(errorData.message || 'Error creating promotion');
             }
         } catch (error) {
             console.error('Fetch error:', error);

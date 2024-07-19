@@ -115,6 +115,66 @@ export default function Cart() {
       });
     }
   };
+  const handlePlaceOrder1 = async () => {
+    if (!token) {
+      console.error("Chưa đăng nhập!");
+      return;
+    }
+    if (!address || !phoneNumber) {
+      toast.error("Vui lòng nhập đầy đủ thông tin địa chỉ và số điện thoại!", {
+        // ... (toast options)
+      });
+      return;
+    }
+     
+    if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+      toast.error("Số điện thoại phải là 10 chữ số!", {
+        // ... (toast options)
+      });
+      return;
+    }
+    try {
+      const params = new URLSearchParams({
+        address: address,
+        phoneNumber: phoneNumber
+      });
+      const apiUrl = `https://localhost:7122/api/Order/place-order?${params.toString()}`;
+
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json(); // Lấy dữ liệu lỗi từ server (nếu có)
+        const errorMessage = errorData.message || `Lỗi khi đặt hàng: ${res.status}`;
+        throw new Error(errorMessage); 
+      }
+
+      // Xử lý khi đặt hàng thành công
+      toast.success('Đặt hàng thành công!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+      // Chuyển hướng người dùng đến trang cảm ơn hoặc trang lịch sử đơn hàng
+      navigate('/vieworder'); // Thay '/order-history' bằng đường dẫn thực tế
+
+    } catch (error) {
+      console.error('Lỗi:', error);
+      toast.error(`Có lỗi xảy ra khi đặt hàng: ${error.message}`, { 
+        // ... (toast options)
+      });
+    }
+  };
 
   const handlePlaceOrder = async () => {
     if (!token) {
@@ -279,8 +339,8 @@ const placeOrderAfterPayOS = async () => {
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </div>
-            <button className="btn btn-primary" onClick={handlePlaceOrder}>
-              Ship Code 
+            <button className="btn btn-primary" onClick={handlePlaceOrder1}>
+              Shipcod
             </button>
             <button className="btn btn-primary" onClick={handlePlaceOrder}>
               Payment online 

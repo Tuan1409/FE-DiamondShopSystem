@@ -138,7 +138,7 @@ export default function ReadPromotion() {
                           <TableCell>{promotion.discountPercentage*100}%</TableCell>
                     
                           <TableCell>
-                            {promotion.status ? 'Hoạt động' : 'Ngừng hoạt động'} 
+                            {promotion.status ? 'Ngừng hoạt động' : 'Hoạt Động'} 
                           </TableCell> 
                           <TableCell>
                             <Button
