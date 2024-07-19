@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, styled, TablePagination } from '@mui/material';
+import { TextField, Button, styled, TablePagination, Snackbar, Alert } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CancelIcon from '@mui/icons-material/Cancel';
 import UpdateIcon from '@mui/icons-material/Update';
-import CreateProductType from './CreateProductType'; 
+import CreateProductType from './CreateProductType';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { amber } from '@mui/material/colors';
 
@@ -17,9 +17,8 @@ const UpdateButton = styled(Button)(({ theme }) => ({
 
 export default function CRUDProductType() {
   const [productTypes, setProductTypes] = useState([]);
-  const [nameProductType, setnameProductType] = useState(null);
-  const [materialProductType, setMaterialProductType] = useState(null); 
-  const [priceProductType, setPriceProductType] = useState(null); 
+  const [materialProductType, setMaterialProductType] = useState(null);
+  const [priceProductType, setPriceProductType] = useState(null);
   const [showDelete, setShowDelete] = useState(false);
   const [selectedForDeletion, setSelectedForDeletion] = useState(null);
   const [selectedForUpdate, setSelectedForUpdate] = useState(null);
@@ -28,22 +27,21 @@ export default function CRUDProductType() {
   const [deleteError, setDeleteError] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchProductTypes = async () => {
       try {
-        const response = await fetch('https://localhost:7122/api/ProductType/GetProductTypes', {
-          headers: {
-            'Accept': '*/*'
-          },
-        });
+        const response = await fetch('https://localhost:7122/api/ProductType/GetProductTypes');
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
 
         const data = await response.json();
-        setProductTypes(data.data);
+        setProductTypes(data.data); // Make sure data.data contains the array of product types
       } catch (error) {
         console.error('Error fetching product types:', error);
       }
@@ -62,49 +60,65 @@ export default function CRUDProductType() {
     setShowUpdate(false);
     const productTypeToUpdate = productTypes.find(c => c.id === id);
     if (productTypeToUpdate) {
-      setnameProductType(productTypeToUpdate.name);
-      setMaterialProductType(productTypeToUpdate.material); 
+      setMaterialProductType(productTypeToUpdate.material);
       setPriceProductType(productTypeToUpdate.price);
     }
   };
 
   const handleSubmitDelete = async (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error("Token not found!");
+      return;
+    }
+
     if (id) {
       const url = `https://localhost:7122/api/ProductType/DeleteProductType/${id}`;
       try {
         const response = await fetch(url, {
           method: 'DELETE',
           headers: {
-            'Accept': '*/*'
+            'Authorization': `Bearer ${token}`
           }
         });
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Xóa sản phẩm thất bại');
         }
-        setTriggerRead(prev => !prev);
+        setTriggerRead((prev) => !prev);
         setDeleteError(null);
+        setSnackbarSeverity('success');
+        setSnackbarMessage('Xóa loại sản phẩm thành công!');
+        setOpenSnackbar(true);
       } catch (error) {
         console.error('Lỗi khi xóa sản phẩm:', error);
-        setDeleteError(error.message); 
+        setDeleteError(error.message);
+        setSnackbarSeverity('error');
+        setSnackbarMessage('Xóa loại sản phẩm thất bại!');
+        setOpenSnackbar(true);
       }
     }
+    setShowDelete(false); // Close the delete confirmation
   };
 
-  const UpdateProductType = async (Id, Name, Material, Price, IsDeleted) => {
+
+  const UpdateProductType = async (Id, Material, Price) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error("Token not found!");
+      return;
+    }
     const url = `https://localhost:7122/api/ProductType/UpdateProductType/${Id}`;
     const data = {
-      name: Name,
-      material: Material, 
-      price: Price, 
-      isDeleted: IsDeleted
+      material: Material,
+      price: Price,
     };
     try {
       const response = await fetch(url, {
         method: 'PUT',
         headers: {
-          'Accept': '*/*',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(data)
       });
@@ -112,23 +126,29 @@ export default function CRUDProductType() {
         throw new Error('Network response was not ok');
       }
       setShowUpdate(true);
-      setTriggerRead(prev => !prev);
+      setTriggerRead((prev) => !prev);
+      setSnackbarSeverity('success');
+      setSnackbarMessage('Cập nhật loại sản phẩm thành công!');
+      setOpenSnackbar(true);
     } catch (error) {
       console.error('Error updating product type:', error);
+      setSnackbarSeverity('error');
+      setSnackbarMessage('Cập nhật loại sản phẩm thất bại!');
+      setOpenSnackbar(true);
     }
   };
 
   const handleSubmitUpdate = (id, material, price) => {
-	if (!validateForm()) {
-		setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
-		setOpenSnackbar(true);
-		return;
-		}
-    UpdateProductType(id, null, material, price, false); 
+    if (!validateForm()) {
+      setSnackbarSeverity('warning');
+      setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+      setOpenSnackbar(true);
+      return;
+    }
+    UpdateProductType(id, material, price);
     setSelectedForUpdate(null);
-    setnameProductType(null);
     setMaterialProductType(null);
-    setPriceProductType(null); 
+    setPriceProductType(null);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -139,20 +159,28 @@ export default function CRUDProductType() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   function validateForm() {
-    
     return (
-		material &&
-		price 
+      materialProductType &&
+      priceProductType
     );
   }
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
   return (
     <>
-      <div className='formCRUDContainer'>
+      <div className="formCRUDContainer">
         <div>
           {Array.isArray(productTypes) && productTypes.length > 0 ? (
             <>
-              <table className='table table-striped table-bordered'>
+              <table className="table table-striped table-bordered">
                 <thead>
                   <tr>
                     <th>Id</th>
@@ -161,7 +189,7 @@ export default function CRUDProductType() {
                     <th>Giá</th>
                     <th></th>
                     <th>
-                      <CreateProductType onProductTypeCreated={() => setTriggerRead(prev => !prev)} />
+                      <CreateProductType onProductTypeCreated={() => setTriggerRead((prev) => !prev)} />
                     </th>
                   </tr>
                 </thead>
@@ -179,7 +207,11 @@ export default function CRUDProductType() {
 
                           {selectedForUpdate === productType.id && !showUpdate && (
                             <>
-                              <form onSubmit={() => handleSubmitUpdate(productType.id, materialProductType, priceProductType)}> 
+                              <form
+                                onSubmit={() =>
+                                  handleSubmitUpdate(productType.id, materialProductType, priceProductType)
+                                }
+                              >
                                 <TextField
                                   disabled
                                   id="outlined-disabled"
@@ -200,7 +232,7 @@ export default function CRUDProductType() {
                                 <br />
 
                                 <TextField
-								required
+                                  required
                                   type="number"
                                   defaultValue={productType.price}
                                   onChange={(e) => setPriceProductType(parseInt(e.target.value))}
@@ -208,7 +240,7 @@ export default function CRUDProductType() {
                                   label="Giá"
                                   variant="outlined"
                                   sx={{ margin: '10px' }}
-								  inputProps={{ min: 0 }}
+                                  inputProps={{ min: 0 }}
                                 />
                                 <br />
 
@@ -228,8 +260,8 @@ export default function CRUDProductType() {
                                   value="Clear"
                                   onClick={() => {
                                     setShowUpdate(!showUpdate);
-                                    setMaterialProductType(null); 
-                                    setPriceProductType(null); 
+                                    setMaterialProductType(null);
+                                    setPriceProductType(null);
                                     setSelectedForUpdate(null);
                                   }}
                                   variant="contained"
@@ -259,9 +291,7 @@ export default function CRUDProductType() {
 
                           {selectedForDeletion === productType.id && showDelete && (
                             <div>
-                              {deleteError && (
-                                <div style={{ color: 'red' }}>{deleteError}</div>
-                              )}
+                              {deleteError && <div style={{ color: 'red' }}>{deleteError}</div>}
 
                               <Button
                                 type="submit"
@@ -271,10 +301,7 @@ export default function CRUDProductType() {
                                 size="large"
                                 endIcon={<SendIcon />}
                                 sx={{ margin: '5px' }}
-                                onClick={() => {
-                                  handleSubmitDelete(productType.id);
-                                  handleDelete(productType.id);
-                                }}
+                                onClick={() => handleSubmitDelete(productType.id)}
                               >
                                 Xác nhận
                               </Button>
@@ -326,6 +353,11 @@ export default function CRUDProductType() {
           )}
         </div>
       </div>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

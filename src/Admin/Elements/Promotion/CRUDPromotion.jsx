@@ -135,7 +135,7 @@ export default function ReadPromotion() {
                       .map((promotion) => (
                         <TableRow key={promotion.id}>
                           <TableCell>{promotion.point}</TableCell>
-                          <TableCell>{promotion.discountPercentage}%</TableCell>
+                          <TableCell>{promotion.discountPercentage*100}%</TableCell>
                     
                           <TableCell>
                             {promotion.status ? 'Hoạt động' : 'Ngừng hoạt động'} 

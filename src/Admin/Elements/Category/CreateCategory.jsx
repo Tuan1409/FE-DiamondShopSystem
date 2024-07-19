@@ -12,6 +12,8 @@ export default function CreateCategory(props) {
   const [length, setLength] = useState(0);
   const [data, setData] = useState(null);
   const [open, setOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // For Snackbar severity
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -20,20 +22,28 @@ export default function CreateCategory(props) {
     setLength(0);
     setData(null);
   };
+
   useEffect(() => {
-    // This effect runs when `data` changes
-    if (data && data.status !== 400) {
-      // Assuming `data.status` not being 400 means success
-      setName(''); // Reset the nameCategory only on successful creation
+    // Kiểm tra trường success trong response
+    if (data && data.success) {
+      setName('');
       setSize(0);
       setLength(0);
+      setSnackbarSeverity('success');
+      setSnackbarMessage('Tạo danh mục thành công!');
+      setOpenSnackbar(true);
+      handleClose(); 
+    } else if (data && !data.success) {
+      setSnackbarSeverity('error');
+      setSnackbarMessage(data.message || 'Tạo danh mục thất bại!'); // Lấy message từ API
+      setOpenSnackbar(true);
     }
   }, [data]);
   const handleSubmit = (event) => {
     event.preventDefault();
     // Gọi hàm CreateCaratWeight, truyền weight và price như là các đối số
     if (!validateForm()) {
-      setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+      setSnackbarMessage('Vui lòng nhập tên và chỉ một trong hai trường Size hoặc Length phải bằng 0');
       setOpenSnackbar(true);
       return;
       }
@@ -65,11 +75,8 @@ export default function CreateCategory(props) {
       .catch((error) => console.error('Error:', error));
   }
   function validateForm() {
-
-    return (
-      size &&
-      length 
-    );
+    // Kiểm tra xem name có giá trị và chỉ một trong hai size hoặc length bằng 0
+    return name && ((size === 0 && length !== 0) || (size !== 0 && length === 0)); 
   }
   return (
     <div style={{
@@ -139,13 +146,13 @@ export default function CreateCategory(props) {
                   inputProps={{ min: 0 }}
                 />
               </div>
-              {
+              {/* {
                 data && (data.status === 400 ? (
                   <h3>{data.errors.Price}</h3>
                 ) : (
                   <h3>Create successful</h3>
                 ))
-              }
+              } */}
               <div className='formSubmit' >
                 <Button
                   type="submit"

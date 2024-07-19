@@ -158,7 +158,7 @@ export default function CRUDOrder() {
                         <TableRow key={order.id}>
                           <TableCell>{order.id}</TableCell>
                           <TableCell>{order.userName}</TableCell>
-                          <TableCell>{order.totalPrice}</TableCell>
+                          <TableCell>{order.totalPrice.toLocaleString()}</TableCell>
                           <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                           <TableCell>
                             {order.status}

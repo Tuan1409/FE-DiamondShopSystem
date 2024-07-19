@@ -49,7 +49,7 @@ export default function Navbar() {
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid" id="navBarContainer">
-        <Link to="/" className="navbar-brand">Home</Link> 
+        <Link to="/" className="navbar-brand">Trang chủ </Link> 
 
           {/* Hiển thị danh sách category */}
           {categories.map((category) => (
@@ -63,7 +63,7 @@ export default function Navbar() {
           ))}
 
           {/* Các phần tử còn lại của navbar */}
-          <CustomLink to="/vieworder">Order</CustomLink>
+          <CustomLink to="/vieworder">Order </CustomLink>
           <CustomLink to="/cart">
             <img src="src\assets\img\shopping-cart (1).png" alt="" className="cartLogo" />
           </CustomLink>

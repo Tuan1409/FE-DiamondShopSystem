@@ -172,14 +172,14 @@ export default function ReadProduct() {
                           <Button variant="contained" color="primary" onClick={() => handleOpenProductDetailsDialog(product)}>
                               Xem chi tiết
                             </Button>
-                            <Button
+                            {/* <Button
                               variant="outlined"
                               color="error"
                               startIcon={<DeleteIcon />}
                               onClick={() => handleDeleteProduct(product.id)}
                             >
                               Delete
-                            </Button>
+                            </Button> */}
                             {/* Update button */}
                             <Button variant="outlined" color="warning" size="large" onClick={() => handleUpdate(product)}>
                               Update

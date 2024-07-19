@@ -48,6 +48,7 @@ export default function CreateProductType(props) {
   };
 
   function Create(Material, Price) {
+    const token = localStorage.getItem('token');
     const url = 'https://localhost:7122/api/ProductType/CreateProductType';
     const formData = new FormData();
     formData.append('material', Material);
@@ -56,6 +57,9 @@ export default function CreateProductType(props) {
 
     fetch(url, {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}` // Thêm token vào header
+      },
       body: formData 
     })
       .then(response => {

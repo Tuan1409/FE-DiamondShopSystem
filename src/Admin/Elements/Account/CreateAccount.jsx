@@ -9,6 +9,7 @@ import {
   MenuItem,
   FormControl,
   Snackbar,
+  Alert,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
@@ -24,6 +25,7 @@ export default function CreateAccount(props) {
   const [open, setOpen] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -36,42 +38,54 @@ export default function CreateAccount(props) {
 
     if (!validateForm()) {
       setSnackbarMessage('Vui lòng điền đầy đủ thông tin!');
+      setSnackbarSeverity('warning');
       setOpenSnackbar(true);
       return;
     }
 
+    const formData = new FormData();
+    formData.append('name', nameAccount);
+    formData.append('email', emailAccount);
+    formData.append('address', addressAccount);
+    formData.append('gender', genderAccount);
+    formData.append('password', passwordAccount);
+    formData.append('phoneNumber', phoneAccount);
+    formData.append('roleId', roleAccount);
+
     try {
-      await CreateAccount(
-        emailAccount,
-        passwordAccount,
-        nameAccount,
-        addressAccount,
-        genderAccount,
-        phoneAccount,
-        roleAccount
-      );
-      clearForm();
-      setSnackbarMessage('Tạo tài khoản thành công!');
-      setOpenSnackbar(true);
-      setTimeout(() => {
-        handleClose();
-      }, 500);
-      window.location.reload();
+      const response = await fetch('https://localhost:7122/api/Account/CreateUser', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: formData,
+      });
+      const responseData = await response.json();
+      if (!response.ok) { // Kiểm tra response.ok trước
+        throw new Error(responseData.message || 'Lỗi khi tạo tài khoản!');
+      }
+
+      // Kiểm tra trường success trong response
+      if (responseData.success === false) { 
+        throw new Error(responseData.message || 'Lỗi khi tạo tài khoản!');
+      } else {
+        // Tạo tài khoản thành công
+        clearForm();
+        setSnackbarMessage('Tạo tài khoản thành công!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          handleClose();
+        }, 500);
+        props.onAccountCreated(); 
+      }
     } catch (error) {
       console.error('Lỗi khi tạo tài khoản:', error);
       setSnackbarMessage(error.message || 'Lỗi khi tạo tài khoản!');
+      setSnackbarSeverity('error');
       setOpenSnackbar(true);
     }
   };
-
-  const formData = new FormData();
-  formData.append('name', nameAccount);
-  formData.append('email', emailAccount);
-  formData.append('address', addressAccount);
-  formData.append('gender', genderAccount);
-  formData.append('password', passwordAccount);
-  formData.append('phoneNumber', phoneAccount);
-  formData.append('roleId', roleAccount);
 
   const handleClear = () => {
     clearForm();
@@ -84,36 +98,6 @@ export default function CreateAccount(props) {
     setOpenSnackbar(false);
   };
 
-  async function CreateAccount(
-    Email,
-    Password,
-    Name,
-    Address,
-    Gender,
-    Phone,
-    Role
-  ) {
-    const token = localStorage.getItem('token');
-    const url = 'https://localhost:7122/api/Account/CreateUser';
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData, 
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.ErrorMessage || 'Lỗi khi tạo tài khoản!');
-    }
-
-    const responseData = await response.json();
-    console.log(responseData);
-    props.onAccountCreated();
-  }
-
   function clearForm() {
     setNameAccount('');
     setEmailAccount('');
@@ -124,6 +108,17 @@ export default function CreateAccount(props) {
     setRoleAccount('');
   }
 
+  function validateForm() {
+    return (
+      nameAccount &&
+      emailAccount &&
+      addressAccount &&
+      genderAccount &&
+      passwordAccount &&
+      phoneAccount &&
+      roleAccount
+    );
+  }
   function validateForm() {
     return (
       nameAccount &&
