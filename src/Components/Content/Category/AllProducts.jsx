@@ -95,35 +95,39 @@ export default function AllProducts() {
   return (
     <div className="diamond-shop-container">
       <h1>ALL PRODUCTS</h1>
-  
+
       <div className="diamond-grid productContainer">
         {products.map((product) => (
-          <div key={product.id} className="diamond-card col-md-3 col-sm-6 mb-4">
-            <Link to={`/product/${product.id}`} className="text-decoration-none">
-              <div className="ratio ratio-1x1">
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="diamond-image imgListProduct" 
-                />
+          // Chỉ hiển thị sản phẩm nếu isDeleted là false
+          !product.isDeleted && ( 
+            <div key={product.id} className="diamond-card col-md-3 col-sm-6 mb-4">
+              <Link to={`/product/${product.id}`} className="text-decoration-none">
+                <div className="ratio ratio-1x1">
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="diamond-image imgListProduct" 
+                  />
+                </div>
+              </Link>
+              <div className="diamond-info card-body p-0 pt-2">
+                <h3 className="card-title" style={{ wordBreak: 'break-all' }}>
+                  {product.name}
+                </h3>
+                <h5 className="card-text" style={{ wordBreak: 'break-all' }}>
+                  Chất liệu: {product.productType.material}
+                </h5>
+                <p className="product-size">
+                  {product.category.size === 0
+                    ? `Chiều dài: ${product.category.length}`
+                    : `Size: ${product.category.size}`}
+                </p>
               </div>
-            </Link>
-            <div className="diamond-info card-body p-0 pt-2">
-              <h3 className="card-title" style={{ wordBreak: 'break-all' }}>
-                {product.name}
-              </h3>
-              <h5 className="card-text" style={{ wordBreak: 'break-all' }}>
-                Chất liệu: {product.productType.material}
-              </h5>
-              <p className="product-size">
-                {product.category.size === 0
-                  ? `Chiều dài: ${product.category.length}`
-                  : `Size: ${product.category.size}`}
-              </p>
             </div>
-          </div>
+          )
         ))}
       </div>
     </div>
   );
 };
+

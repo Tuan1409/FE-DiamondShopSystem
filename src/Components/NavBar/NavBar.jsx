@@ -2,12 +2,13 @@ import './navBar.css';
 import { Link, useMatch, useResolvedPath, Outlet, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { jwtDecode } from "jwt-decode";
 export default function Navbar() {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem('token') !== null;
   const [categories, setCategories] = useState([]);
-
+  const token = localStorage.getItem("token");
+  const decodedToken = token ? jwtDecode(token) : null; // Kiểm tra token trước
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -75,6 +76,9 @@ export default function Navbar() {
                 className="avatar-icon"
                 onClick={handleProfile}
               />
+         <span className="navbar-text mx-2" style={{ color: 'white' }}> 
+  Welcome, {decodedToken?.Username}!
+</span>
               <CustomLink to="/" onClick={handleLogout}>
                 Logout
               </CustomLink>
