@@ -256,9 +256,9 @@ export default function ReadProduct() {
           <Grid item xs={12} sm={6}>
             <TextField label="Giá" value={selectedProduct.price.toLocaleString()} disabled fullWidth />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <TextField label="Số lượng" value={selectedProduct.quantity} disabled fullWidth />
-          </Grid>
+          </Grid> */}
 
           {/* Hiển thị thông tin Primary Diamond */}
           {selectedProduct.primaryDiamonds.length > 0 && (
@@ -287,9 +287,9 @@ export default function ReadProduct() {
                 <Grid item xs={12} md={3}>
                   <TextField label="Giá" value={diamond.price.toLocaleString()} disabled fullWidth />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                {/* <Grid item xs={12} md={3}>
                   <TextField label="Số lượng" value={diamond.quantity} disabled fullWidth />
-                </Grid>
+                </Grid> */}
               </Grid>
             </Grid>
           ))}

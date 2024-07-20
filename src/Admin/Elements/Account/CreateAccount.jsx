@@ -262,10 +262,10 @@ export default function CreateAccount(props) {
                         sx={{ padding: '0' }}
                         required 
                       >
-                        <MenuItem value={1}>Admin</MenuItem>
-                        <MenuItem value={2}>Sale staff</MenuItem>
-                        <MenuItem value={3}>Delivery staff</MenuItem>
-                        <MenuItem value={4}>Customer</MenuItem>
+                        <MenuItem value={1}>Customer</MenuItem>
+                        <MenuItem value={2}>Admin</MenuItem>
+                        <MenuItem value={3}>Sale staff</MenuItem>
+                        <MenuItem value={4}>Guest</MenuItem>
                       </Select>
                     </FormControl>
                   </div>

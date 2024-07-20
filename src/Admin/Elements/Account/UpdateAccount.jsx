@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react'
 import { Button, Modal, Box, TextField, Select, InputLabel, MenuItem, styled, FormControl,Snackbar,Alert } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
@@ -216,7 +215,7 @@ export default function UpdateAccount({ onClick, ...props }) {
 						</div> <br />
 						<div className='row'>
 							<div className='col-6'>
-								<TextField type="text" defaultValue={props.email} onChange={handleEmailChange}
+								<TextField type="text" disabled defaultValue={props.email} onChange={handleEmailChange}
 									id="outlined-basic" label="Email" variant="outlined" className='form-control' />
 							</div>
 							<div className='col-6'>

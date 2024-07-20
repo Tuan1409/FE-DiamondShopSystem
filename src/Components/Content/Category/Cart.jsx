@@ -51,13 +51,11 @@ export default function Cart() {
   }, [token]);
 
   const calculateTotalPrice = () => {
-    // Tính tổng tiền các sản phẩm (không nhân discount)
     let subtotal = cart ? cart.items.reduce((total, item) => {
       return total + item.quantity * item.price; 
     }, 0) : 0;
   
-    // Nhân tổng tiền với discountPercentage của giỏ hàng
-    return subtotal * (cart.discountPercentage || 1); 
+    return cart.discountPercentage ? subtotal - (subtotal * cart.discountPercentage) : subtotal;
   };
   const handleDeleteItem = async (productId) => {
     if (!token) {
@@ -136,7 +134,9 @@ export default function Cart() {
     try {
       const params = new URLSearchParams({
         address: address,
-        phoneNumber: phoneNumber
+        phoneNumber: phoneNumber,
+        paymentId: 1
+
       });
       const apiUrl = `https://localhost:7122/api/Order/place-order?${params.toString()}`;
 
@@ -240,7 +240,12 @@ const placeOrderAfterPayOS = async () => {
     const { address, phoneNumber } = storedOrderInfo ? JSON.parse(storedOrderInfo) : {};
 
     // 2. Gọi API đặt hàng 
-    const params = new URLSearchParams({ address, phoneNumber });
+    const params = new URLSearchParams({
+      address: address,
+      phoneNumber: phoneNumber,
+      paymentId: 2
+
+    });
     const apiUrl = `https://localhost:7122/api/Order/place-order?${params.toString()}`;
 
     const res = await fetch(apiUrl, {
@@ -313,7 +318,7 @@ const placeOrderAfterPayOS = async () => {
           <div className="text-right">
             {/* Hiển thị discountPercentage cho toàn bộ giỏ hàng */}
             {cart.discountPercentage > 0 && (
-              <p>Giảm giá: {cart.discountPercentage.toFixed(1)}%</p>
+              <p>Giảm giá: {cart.discountPercentage.toFixed(1)*100}%</p>
             )}
             <h3>Tổng tiền: {calculateTotalPrice().toLocaleString()} VND</h3>
             {/* ... (Các phần tử khác) ... */}

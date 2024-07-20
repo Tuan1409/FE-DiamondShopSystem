@@ -164,11 +164,12 @@ const Profile = () => {
   <div className="row">
     <div className="col-6">
       <TextField
+      disabled
         label="Email"
         variant="outlined"
         className="form-control"
         value={user.email}
-        disabled // Vô hiệu hóa input email
+         // Vô hiệu hóa input email
         fullWidth
       />
     </div>
@@ -228,16 +229,7 @@ const Profile = () => {
   </div>
   <br />
   <div className="row">
-    <div className="col-4">
-      <TextField
-        label="Vai trò"
-        variant="outlined"
-        className="form-control"
-        value={getRoleValue(user.roleId)}
-        disabled // Vô hiệu hóa input role
-        fullWidth
-      />
-    </div>
+    
     <div className="col-4">
       <TextField
         label="Điểm tích lũy"
@@ -275,6 +267,7 @@ const Profile = () => {
             <div className="row">
               <div className="col-6">
                 <TextField
+                disabled
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -358,6 +351,7 @@ const Profile = () => {
                 <FormControl fullWidth>
                   <InputLabel id="select-label">Role</InputLabel>
                   <Select
+                  disabled
                     labelId="select-label"
                     id="demo-simple-select"
                     variant="outlined"
@@ -369,15 +363,16 @@ const Profile = () => {
                       padding: '0',
                     }}
                   >
-                    <MenuItem value={1}>Admin</MenuItem>
-                    <MenuItem value={2}>Sale Staff</MenuItem>
-                    <MenuItem value={3}>Delivery Staff</MenuItem>
+                    <MenuItem value={1}>Customer</MenuItem>
+                    <MenuItem value={2}>Admin</MenuItem>
+                    <MenuItem value={3}>Sale Staff</MenuItem>
                     <MenuItem value={4}>Customer</MenuItem>
                   </Select>
                 </FormControl>
               </div>
               <div className="col-4">
                 <TextField
+                disabled
                   type="number"
                   value={point}
                   onChange={(e) => setPoint(parseInt(e.target.value, 10))} 

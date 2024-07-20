@@ -71,6 +71,7 @@ export default function ViewOrder() {
                                     <th>Ngày đặt hàng</th>
                                     <th>Khuyến mãi</th>
                                     <th>Tổng tiền</th>
+                                    <th>Thanh toán</th>
                                     <th>Trạng thái</th>
                                     <th>Chi tiết</th>
                                 </tr>
@@ -81,13 +82,14 @@ export default function ViewOrder() {
                                         <td>{index + 1}</td>
                                         <td>{order.id}</td>
                                         <td>{order.orderDate}</td>
-                                        <td>{order.discountPercentage}%</td>
+                                        <td>{order.discountPercentage*100}%</td>
                                         
 
                                        
                                         
 
                                         <td>{order.totalPrice.toLocaleString()} VND</td>
+                                        <td>{order.paymentName}</td>
                                         <td>{order.status}</td>
                                         <td>
                                             <button
